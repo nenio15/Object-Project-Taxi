@@ -1,0 +1,53 @@
+<resources>
+
+    <style name="Widget.Theme.TexiCar_app.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+    <style name="sign_in_tex">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="forgot_pass">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+
+    <style name="password_">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+
+    <style name="or">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+
+    <style name="terms_and_c">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+
+    <style name="sign_in_to_">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+
+    <style name="sign_up">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#2F80ED</item>
+        <item name="lineHeight">22sp</item>
+    </style>
+
+    <style name="email_id_">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#4F4F4F</item>
+    </style>
+    <style name="some_id">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+</resources>
