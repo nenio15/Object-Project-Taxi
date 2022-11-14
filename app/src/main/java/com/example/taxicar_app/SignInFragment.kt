@@ -1,12 +1,24 @@
 package com.example.taxicar_app
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.taxicar_app.databinding.FragmentSignInBinding
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,6 +31,9 @@ import com.example.taxicar_app.databinding.FragmentSignInBinding
  * create an instance of this fragment.
  */
 class SignInFragment : Fragment() {
+    var auth: FirebaseAuth? = null
+    var googleSignInClient: GoogleSignInClient? = null
+    var GOOGLE_LOGIN_CODE = 9001
     var binding: FragmentSignInBinding? = null
     // TODO: Rename and change types of parameters
     //private var param1: String? = null
@@ -26,6 +41,8 @@ class SignInFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
+
         arguments?.let {
             //param1 = it.getString(ARG_PARAM1)
             //param2 = it.getString(ARG_PARAM2)
@@ -40,9 +57,32 @@ class SignInFragment : Fragment() {
         val mActivity = activity as MainActivity
 
         binding?.signIn?.setOnClickListener{
-            Log.d("SIGNIN", "to choice")
-            mActivity.replaceFragment(ChoiceFragment.newInstance())
+            val email = binding?.emailIn?.text.toString()
+            val password = binding?.passwordIn?.text.toString()
+            auth?.signInWithEmailAndPassword(email,password)
+                ?.addOnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
+                        mActivity.replaceFragment(ChoiceFragment.newInstance())
+                        Log.d("SIGNIN", "to choice")
+                    }else {
+                        Toast.makeText(mActivity,"아이디와 비밀번호를 확인해주세요.",Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
+
+        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(mActivity, gso)
+
+        binding?.googleIn?.setOnClickListener {
+            var signInIntent = googleSignInClient?.signInIntent
+            startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
+        }
+
+
         binding?.signUpBut?.setOnClickListener{
             Log.d("SIGNIN", "to sign up")
             mActivity.replaceFragment(SignUpFragment.newInstance())
@@ -51,6 +91,30 @@ class SignInFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == GOOGLE_LOGIN_CODE){
+            var result = Auth.GoogleSignInApi.getSignInResultFromIntent(data!!)
+            if(result!!.isSuccess){
+                var account = result.signInAccount
+                firebaseAuthWithGoogle(account)
+            }
+        }
+    }
+    fun firebaseAuthWithGoogle(account: GoogleSignInAccount?){
+        val mActivity = activity as MainActivity
+        var credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+        auth?.signInWithCredential(credential)
+            ?.addOnCompleteListener{ task ->
+                if(task.isSuccessful){
+                    Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
+                    mActivity.replaceFragment(ChoiceFragment.newInstance())
+                }
+                else{
+                    Toast.makeText(mActivity,"구글 로그인에 실패했습니다.",Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
