@@ -24,9 +24,9 @@ class ChoiceFragment : Fragment() {
     private var toSchool: Boolean? = null
     //private var byTaxi: Boolean? = null
 
-    fun divideLine(togo: Boolean?, btn: Int, mActivity: MainActivity){
+    fun divideLine(togo: Boolean?, btn: Int, mActivity: MenuActivity){
         //대충, index에 따라서, 0이면 taxi & school, 1이면 carp & dome
-        mActivity.binding.btnTest.visibility = View.VISIBLE
+        mActivity.binding.btnTest2.visibility = View.VISIBLE
 
         if(togo == true) {
             /*
@@ -71,7 +71,7 @@ class ChoiceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentChoiceBinding.inflate(inflater, container, false)
-        val mActivity = activity as MainActivity
+        val mActivity = activity as MenuActivity
         //mActivity.binding.listBack.visibility = View.GONE
 
         binding?.goTaxiClick?.setOnClickListener{
@@ -80,18 +80,18 @@ class ChoiceFragment : Fragment() {
         binding?.goCarpoolClick?.setOnClickListener{
             divideLine(toSchool, 1, mActivity)
         }
-        mActivity.binding.btnTest.setOnClickListener{
+        mActivity.binding.btnTest2.setOnClickListener{
             //목적지 설정으로 회귀
-            if(mActivity.binding.listBack.visibility == View.VISIBLE) { //임시설정..
-                mActivity.binding.frmUi.visibility = View.VISIBLE
-                mActivity.binding.listBack.visibility = View.INVISIBLE
+            if(mActivity.binding.recTimelines.visibility == View.VISIBLE) { //임시설정..
+                mActivity.binding.frmMenu.visibility = View.VISIBLE
+                //mActivity.binding.listBack.visibility = View.INVISIBLE
                 mActivity.binding.recTimelines.visibility = View.GONE
                 Log.d("MAIN", "delete rectime")
             }else {
                 binding?.goTaxiClick?.text = "Dormitory\n-> School"
                 binding?.goCarpoolClick?.text = "School\n-> Dormitory"
                 toSchool = null
-                mActivity.binding.btnTest.visibility = View.GONE
+                mActivity.binding.btnTest2.visibility = View.GONE
                 Log.d("CHOICE", "back to dest")
             }
         }

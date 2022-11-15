@@ -1,5 +1,6 @@
 package com.example.taxicar_app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -40,11 +41,14 @@ import com.example.taxicar_app.databinding.FragmentMainBinding
             binding = FragmentMainBinding.inflate(inflater, container, false)
             // Inflate the layout for this fragment
 
-            val mActivity = activity as MainActivity
+            //private val mActivity = activity as MainActivity
 
             binding?.startBtn?.setOnClickListener {
                 Log.d("MAIN", "to sign in")
+                val mActivity = activity as MainActivity
+                //mActivity.replaceFragment(AlarmFragment.newInstance())    //for test
                 mActivity.replaceFragment(SignInFragment.newInstance())
+
             }
             return binding?.root//inflater.inflate(R.layout.fragment_sign_in, container, false)
         }
