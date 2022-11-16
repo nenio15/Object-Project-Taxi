@@ -56,12 +56,8 @@ class SignInFragment : Fragment() {
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
 
+        val mActivity = activity as MainActivity
         binding?.signIn?.setOnClickListener{
-            //mActivity.replaceFragment(ChoiceFragment.newInstance())
-            //activity 전환
-            //val intent = Intent(activity, MenuActivity::class.java)
-            //startActivity(intent)
-
             val mActivity = activity as MainActivity
             val email = binding?.emailIn?.text.toString()
             val password = binding?.passwordIn?.text.toString()
@@ -69,26 +65,23 @@ class SignInFragment : Fragment() {
 
             auth?.signInWithEmailAndPassword(email,password)
                 ?.addOnCompleteListener { task ->
-                    if(task.isSuccessful) {
-                        Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
-                        //val intent = Intent(activity, MenuActivity::class.java)
-                        //startActivity(intent)
+                    if (task.isSuccessful) {
+                        Toast.makeText(mActivity, "로그인에 성공했습니다", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(activity, MenuActivity::class.java)
+                        startActivity(intent)
 
                         Log.d("SIGNIN", "to choice")
-                    }else {
+                    } else if(email == "root" && password == "root"){
+                        val intent = Intent(activity, MenuActivity::class.java)
+                        startActivity(intent)
+                        Toast.makeText( mActivity,"관리자 모드로 접근",Toast.LENGTH_SHORT).show()
+                    }else{
                         Toast.makeText(mActivity,"아이디와 비밀번호를 확인해주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
-            //관리자 모드
-            if(email == "root" && password == "root"){
-                val intent = Intent(activity, MenuActivity::class.java)
-                startActivity(intent)
-                Toast.makeText( mActivity,"관리자 모드로 접근",Toast.LENGTH_SHORT).show()
-            }
 
         }
 
-        val mActivity = activity as MainActivity
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -96,12 +89,11 @@ class SignInFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(mActivity, gso)
 
         binding?.googleIn?.setOnClickListener {
-            var signInIntent = googleSignInClient?.signInIntent
+            val signInIntent = googleSignInClient?.signInIntent
             startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
         }
         binding?.signUpBut?.setOnClickListener{
             Log.d("SIGNIN", "to sign up")
-            val mActivity = activity as MainActivity
             mActivity.replaceFragment(SignUpFragment.newInstance())
         }
 
@@ -125,12 +117,14 @@ class SignInFragment : Fragment() {
             ?.addOnCompleteListener{ task ->
                 if(task.isSuccessful){
                     Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
-                    mActivity.replaceFragment(ChoiceFragment.newInstance())
+                    val intent = Intent(activity, MenuActivity::class.java)
+                    startActivity(intent)
                 }
                 else{
                     Toast.makeText(mActivity,"구글 로그인에 실패했습니다.",Toast.LENGTH_SHORT).show()
                 }
             }
+
     }
 
     companion object {
