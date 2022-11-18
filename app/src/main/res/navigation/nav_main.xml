@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/menuFragment">
+
+    <fragment
+        android:id="@+id/alarmFragment"
+        android:name="com.example.taxicar_app.AlarmFragment"
+        android:label="fragment_alarm"
+        tools:layout="@layout/fragment_alarm" />
+    <fragment
+        android:id="@+id/choiceFragment"
+        android:name="com.example.taxicar_app.ChoiceFragment"
+        android:label="fragment_choice"
+        tools:layout="@layout/fragment_choice" >
+        <action
+            android:id="@+id/action_choiceFragment_to_timelineFragment"
+            app:destination="@id/timelineFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.example.taxicar_app.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" />
+    <activity
+        android:id="@+id/subActivity"
+        android:name="com.example.taxicar_app.SubActivity"
+        android:label="activity_sub"
+        tools:layout="@layout/activity_sub" />
+    <fragment
+        android:id="@+id/timelineFragment"
+        android:name="com.example.taxicar_app.timelineFragment"
+        android:label="fragment_timeline"
+        tools:layout="@layout/fragment_timeline" >
+        <action
+            android:id="@+id/action_timelineFragment_to_subActivity"
+            app:destination="@id/subActivity" />
+    </fragment>
+</navigation>

@@ -5,37 +5,25 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.ActivityMainBinding
 import com.example.taxicar_app.databinding.ActivityMenuBinding
+import com.example.taxicar_app.databinding.FragmentTimelineBinding
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MenuActivity : AppCompatActivity() {
     lateinit var binding: ActivityMenuBinding
     private lateinit var alarmManager: AlarmManager
 
-    val timelines = arrayOf(
-        Timeline("9:00", "홍길동 김철수 김영희"),
-        Timeline("10:00", ""),
-        Timeline("11:00", ""),
-        Timeline("12:00", ""),
-        Timeline("13:00", ""),
-        Timeline("14:00", "홍길동"),
-        Timeline("15:00", ""),
-        Timeline("16:00", ""),
-        Timeline("17:00", ""),
-        Timeline("18:00", ""),
-        Timeline("19:00", ""),
-        Timeline("20:00", ""),
-        Timeline("21:00", ""),
-        Timeline("22:00", ""),
-        Timeline("23:00", ""),
-        Timeline("24:00", ""),
-    )
 
     fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().run {
@@ -44,6 +32,13 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
+    fun goIntent(){
+        Log.d("MENU", "go SubActivity... please..")
+        val intent = Intent(this, SubActivity::class.java)
+        startActivity(intent)
+    }
+
+/*  TODO 이거는 여기 있을게 아니야,, 저기 timefragemnt로 가라
     fun showRecTime(index1: Int, index2: Int){    // 파라미터는 목적지랑 탑승수단.
         //다른거 view도 조정을..?
         //Log.d("MAIN", "show rectime")
@@ -52,9 +47,24 @@ class MenuActivity : AppCompatActivity() {
         //binding.listBack.visibility = View.VISIBLE
 
         binding.recTimelines.layoutManager = LinearLayoutManager(this)
-        binding.recTimelines.adapter = TimelineAdapter(timelines)
+        val curTimelines = TimelineAdapter(timelines)
+        binding.recTimelines.adapter = curTimelines
+
+        /*
+        binding.recTimelines.setOnClickListener{
+            Log.d("rec", "just click")
+            val intent = Intent(this, SubActivity::class.java)
+            startActivity(intent)
+        }
+        binding.recTimelines.rootView.setOnClickListener {
+            Log.d("rec", "just click2222")
+        }
+         */
+
     }
 
+
+ */
     fun addAlarm(month: Int, day: Int, hour: Int, minute: Int){
         alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         //intent가 안됨, 방법 찾아볼것
@@ -79,22 +89,29 @@ class MenuActivity : AppCompatActivity() {
         alarmManager.cancel(pendingIntent)
     }
 
+    fun navRemote(){
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.frmMenu.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        //setupActionBarWithNavController(navController)
+        binding.navBottom.setupWithNavController(navController)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
+
+
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.frmMenu.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        //setupActionBarWithNavController(navController)
+        binding.navBottom.setupWithNavController(navController)
+        //appBarConfiguration =
+
+
+
         setContentView(binding.root)
-        replaceFragment(MenuFragment.newInstance())
 
-        binding.btnAlarm.setOnClickListener{
-            replaceFragment(AlarmFragment.newInstance())
-        }
-        binding.btnHome.setOnClickListener{
-            replaceFragment(MenuFragment.newInstance())
-        }
-        binding.btnDest.setOnClickListener{
-            replaceFragment(ChoiceFragment.newInstance())
-        }
-
+        //need to change
         binding.btnTest2.setOnClickListener{
             //list있을때 활성화입니다. 아마,
             //근데 new아니지 않아요?
