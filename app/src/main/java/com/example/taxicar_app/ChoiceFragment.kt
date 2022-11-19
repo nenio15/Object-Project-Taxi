@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.taxicar_app.databinding.FragmentChoiceBinding
 import com.example.taxicar_app.databinding.FragmentTimelineBinding
@@ -29,34 +31,18 @@ class ChoiceFragment : Fragment() {
 
     fun divideLine(togo: Boolean?, btn: Int, mActivity: MenuActivity){
         //대충, index에 따라서, 0이면 taxi & school, 1이면 carp & dome
-        mActivity.binding.btnTest2.visibility = View.VISIBLE
 
         if(togo == true) {
-            /*
-            if( btn == 0) {
-                Log.d("GoSchool", "by taxi. go line")
-                mActivity.showRecTime(1, 1)
-                //mActivity 대충 여기는 main에서 list를 보여주게끔 해야함. frag는 그냥 지워?
-            }else {
-                Log.d("GoSchool", "by carp. go line")
-                mActivity.showRecTime(1, 0)
-            }
-             */
             Log.d("CHOICE", "line to school, $btn")
 
-            //mActivity.navRemote()
-            mActivity.replaceFragment(timelineFragment.newInstance())
+            findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             //아래 말고, top_toTop 을 아래 parent로 바꾸는거 업냐, 애니메이션
-            mActivity.binding.navBottom.visibility = View.GONE
-            //mActivity.showRecTime(1, btn)
             return
         }
         else if(togo == false){
             Log.d("CHOICE", "line to dormi, $btn")
-            //mActivity.showRecTime(0, btn)
-            //mActivity.navRemote()
-            mActivity.replaceFragment(timelineFragment.newInstance())
-            mActivity.binding.navBottom.visibility = View.GONE
+
+            findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             return
         }
 

@@ -32,11 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#3071C6"
-        android:visibility="gone"
-        app:contentInsetStart="0dp"
+        app:contentInsetStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/toolbar_top"
+        app:titleMarginStart="12dp"
+        app:titleTextColor="#FFFFFF" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frm_menu"
@@ -62,7 +64,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frm_menu"
-        app:menu="@menu/toolbar" />
+        app:menu="@menu/nav_bottom" />
 
     <ImageView
         android:id="@+id/btn_settting"
@@ -70,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_settings_24" />
@@ -78,8 +81,8 @@
         android:id="@+id/btn_test2"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="368dp"
+        android:layout_marginTop="108dp"
         android:background="@drawable/button_back"
         android:textSize="15sp"
         android:visibility="gone"
@@ -101,50 +104,5 @@
         app:layout_constraintTop_toTopOf="@+id/frm_ui">
 
     </androidx.recyclerview.widget.RecyclerView>
-
-    <FrameLayout
-        android:id="@+id/frm_menu_none"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/list_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/list_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/btn_alarm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="알람" />
-
-        <Button
-            android:id="@+id/btn_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="홈" />
-
-        <Button
-            android:id="@+id/btn_dest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="목적지" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

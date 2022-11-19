@@ -5,19 +5,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.View
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.taxicar_app.databinding.ActivityMainBinding
 import com.example.taxicar_app.databinding.ActivityMenuBinding
-import com.example.taxicar_app.databinding.FragmentTimelineBinding
-import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MenuActivity : AppCompatActivity() {
@@ -96,31 +92,41 @@ class MenuActivity : AppCompatActivity() {
         binding.navBottom.setupWithNavController(navController)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean{
+        Log.d("MENU", item.itemId.toString() + " this is spartaaaaaa")
+        if(item.itemId == R.id.action_setting){
+            Log.d("menu", "click setting...")
+            findNavController(binding.frmMenu.id).navigate(R.id.action_menuFragment_to_action_setting)
+            return true
+        }
+        if(item.itemId == R.id.alarmFragment){
+            Log.d("menu, bottom", "click alarm")
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
 
+        val mToolbar = findViewById<androidx.appcompat.widget.Toolbar>(binding.menuTool.id)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.button_back)
+        //mActionBar?.setTitle("메뉴창")
+        //mActionBar?.setDisplayHomeAsUpEnabled(true)
+        //mActionBar?.setHomeAsUpIndicator(R.drawable.button_back)
 
         val navHostFragment = supportFragmentManager.findFragmentById(binding.frmMenu.id) as NavHostFragment
         val navController = navHostFragment.navController
-        //setupActionBarWithNavController(navController)
+        setSupportActionBar(mToolbar)
+        //setupActionBarWithNavController(navController) //labeling..
         binding.navBottom.setupWithNavController(navController)
+        //binding.menuTool.setupWithNavController(navController)
         //appBarConfiguration =
 
 
 
         setContentView(binding.root)
-
-        //need to change
-        binding.btnTest2.setOnClickListener{
-            //list있을때 활성화입니다. 아마,
-            //근데 new아니지 않아요?
-            //replaceFragment(fragment_choice.newInstance())
-            Log.d("MAIN", "delete rectime")
-            binding.frmMenu.visibility = View.VISIBLE
-            //binding.listBack.visibility = View.INVISIBLE
-            binding.recTimelines.visibility = View.GONE
-        }
-
     }
 }

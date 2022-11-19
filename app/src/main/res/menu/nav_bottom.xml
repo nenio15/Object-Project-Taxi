@@ -14,4 +14,9 @@
         android:id="@+id/choiceFragment"
         android:icon="@drawable/ic_baseline_directions_car_24"
         android:title="목적지" />
+    <item
+        android:id="@+id/timelineFragment"
+        android:icon="@drawable/ic_baseline_fmd_good_24"
+        android:title="시간대"
+        android:visible="false" />
 </menu>
