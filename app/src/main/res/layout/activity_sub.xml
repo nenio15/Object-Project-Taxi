@@ -31,33 +31,34 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <Button
+            android:id="@+id/btn_test3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_back"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="113dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <EditText
         android:id="@+id/input"
         android:layout_width="350dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="32dp"
         android:background="@drawable/inputsubboard"
-        app:layout_constraintBottom_toTopOf="@+id/inputboard"
+        android:text="나한테 왜그러세요"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- inputBoard -->
-    <View
-        android:id="@+id/inputboard"
-        android:layout_width="428dp"
-        android:layout_height="78dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/inputboard"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- #notice -->
+
     <View
         android:id="@+id/notice"
         android:layout_width="428dp"

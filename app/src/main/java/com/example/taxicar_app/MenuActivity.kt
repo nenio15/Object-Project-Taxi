@@ -19,6 +19,7 @@ import java.util.*
 class MenuActivity : AppCompatActivity() {
     lateinit var binding: ActivityMenuBinding
     private lateinit var alarmManager: AlarmManager
+    lateinit var whereTogo: Timedata
 
 
     fun replaceFragment(fragment: Fragment) {
@@ -34,33 +35,6 @@ class MenuActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-/*  TODO 이거는 여기 있을게 아니야,, 저기 timefragemnt로 가라
-    fun showRecTime(index1: Int, index2: Int){    // 파라미터는 목적지랑 탑승수단.
-        //다른거 view도 조정을..?
-        //Log.d("MAIN", "show rectime")
-        binding.frmMenu.visibility = View.GONE
-        binding.recTimelines.visibility = View.VISIBLE
-        //binding.listBack.visibility = View.VISIBLE
-
-        binding.recTimelines.layoutManager = LinearLayoutManager(this)
-        val curTimelines = TimelineAdapter(timelines)
-        binding.recTimelines.adapter = curTimelines
-
-        /*
-        binding.recTimelines.setOnClickListener{
-            Log.d("rec", "just click")
-            val intent = Intent(this, SubActivity::class.java)
-            startActivity(intent)
-        }
-        binding.recTimelines.rootView.setOnClickListener {
-            Log.d("rec", "just click2222")
-        }
-         */
-
-    }
-
-
- */
     fun addAlarm(month: Int, day: Int, hour: Int, minute: Int){
         alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         //intent가 안됨, 방법 찾아볼것
@@ -110,6 +84,8 @@ class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
+        whereTogo = Timedata("", "")
+
 
         val mToolbar = findViewById<androidx.appcompat.widget.Toolbar>(binding.menuTool.id)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.button_back)

@@ -34,21 +34,29 @@ class ChoiceFragment : Fragment() {
 
         if(togo == true) {
             Log.d("CHOICE", "line to school, $btn")
-
+            mActivity.whereTogo.car = "Taxi"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             //아래 말고, top_toTop 을 아래 parent로 바꾸는거 업냐, 애니메이션
             return
         }
-        else if(togo == false){
+        else if(togo == false) {
             Log.d("CHOICE", "line to dormi, $btn")
-
+            mActivity.whereTogo.car = "CarPool"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             return
         }
 
         when(btn){
-            0 -> toSchool = true
-            1 -> toSchool = false
+            0 -> {
+                Log.d("CHOICE", "toSchool...")
+                toSchool = true
+                mActivity.whereTogo.togo = "toSchool"
+            }
+            1 -> {
+                Log.d("CHOICE", "toDormi...")
+                toSchool = false
+                mActivity.whereTogo.togo = "toDormi"
+            }
         }
         binding?.goTaxiClick?.text = "Taxi"
         binding?.goCarpoolClick?.text = "CAR POOL"

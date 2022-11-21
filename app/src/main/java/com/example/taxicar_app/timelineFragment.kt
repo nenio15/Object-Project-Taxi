@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.FragmentTimelineBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,15 +23,16 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class timelineFragment : Fragment() {
+    private var binding: FragmentTimelineBinding? = null
+    private val db = Firebase.firestore
 
-    var binding: FragmentTimelineBinding? = null
     val timelines = arrayOf(
-        Timeline("9:00", "홍길동 김철수 김영희"),
+        Timeline("9:00", "홍길동"),
         Timeline("10:00", ""),
         Timeline("11:00", ""),
         Timeline("12:00", ""),
         Timeline("13:00", ""),
-        Timeline("14:00", "홍길동"),
+        Timeline("14:00", "김철수"),
         Timeline("15:00", ""),
         Timeline("16:00", ""),
         Timeline("17:00", ""),
@@ -60,7 +63,7 @@ class timelineFragment : Fragment() {
         binding = FragmentTimelineBinding.inflate(inflater, container, false)
 
         binding?.recTimelines?.layoutManager = LinearLayoutManager(mActivity)
-        val curTimelines = TimelineAdapter(timelines, mActivity)
+        val curTimelines = TimelineAdapter(timelines, mActivity, db)
         binding?.recTimelines?.adapter = curTimelines
 
         /*
