@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.taxicar_app.databinding.FragmentChoiceBinding
 import com.example.taxicar_app.databinding.FragmentTimelineBinding
-import kotlinx.android.synthetic.main.activity_sub.view.*
+import kotlinx.android.synthetic.main.activity_chat.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -14,9 +13,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.taxicar_app.databinding.ActivityMenuBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 class MenuActivity : AppCompatActivity() {
+    lateinit var auth: FirebaseAuth
     lateinit var binding: ActivityMenuBinding
     private lateinit var alarmManager: AlarmManager
     lateinit var whereTogo: Timedata
@@ -31,7 +34,10 @@ class MenuActivity : AppCompatActivity() {
 
     fun goIntent(){
         Log.d("MENU", "go SubActivity... please..")
-        val intent = Intent(this, SubActivity::class.java)
+        val intent = Intent(this, ChatActivity::class.java)
+        // copy need to organzie again
+        intent.putExtra("name", auth.currentUser?.displayName)
+        intent.putExtra("uid", auth.currentUser?.uid)
         startActivity(intent)
     }
 
@@ -84,6 +90,7 @@ class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
+        auth = Firebase.auth
         whereTogo = Timedata("", "")
 
 
@@ -101,6 +108,9 @@ class MenuActivity : AppCompatActivity() {
         //binding.menuTool.setupWithNavController(navController)
         //appBarConfiguration =
 
+        binding.btnSetting.setOnClickListener{
+            replaceFragment(SettingFragment.newInstance())
+        }
 
 
         setContentView(binding.root)

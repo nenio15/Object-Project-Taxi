@@ -31,9 +31,9 @@
     </fragment>
     <activity
         android:id="@+id/subActivity"
-        android:name="com.example.taxicar_app.SubActivity"
+        android:name="com.example.taxicar_app.ChatActivity"
         android:label="activity_sub"
-        tools:layout="@layout/activity_sub" />
+        tools:layout="@layout/activity_chat" />
     <fragment
         android:id="@+id/timelineFragment"
         android:name="com.example.taxicar_app.timelineFragment"
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.example.taxicar_app.settingFragment"
+        android:name="com.example.taxicar_app.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
 </navigation>

@@ -85,11 +85,17 @@ class TimelineAdapter(val times: Array<Timeline>, val mActivity: MenuActivity, v
             //val mActivity = activity as MainActivity
 
 
-            //이거는 클릭시 문자 이벤트
+            // 클릭 시 대기자 생성, 및 단톡방 들어가기
             binding.root.setOnClickListener{
                 // 현재 시각 구하기... 이게 왜 여기있지?
                 val sf = SimpleDateFormat("yy/MM/dd HH:mm", Locale.KOREA)
                 sf.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
+
+                /*
+                val intent = Intent(mActivity, SubActivity::class.java)
+                intent.putExtra("name", mActivity.auth?.currentUser?.displayName)
+
+                 */
 
                 val data = hashMapOf(
                     "user" to "홍길동",    // register's name

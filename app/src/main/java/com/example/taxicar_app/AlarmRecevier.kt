@@ -11,6 +11,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AlarmRecevier: BroadcastReceiver(){
@@ -25,9 +27,13 @@ class AlarmRecevier: BroadcastReceiver(){
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if(intent != null){
-            Log.e("AlarmReceiver", System.currentTimeMillis().toString())
+            val date = Date(System.currentTimeMillis())
+            val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.KOREA)
+            val nowTime = dateFormat.format(date)
+            Log.e("AlarmReceiver", nowTime)
         }
-        val alarmsound = RingtoneManager.TYPE_ALARM
+
+        val alarmsound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val am = context?.getSystemService(Context.ALARM_SERVICE)
         manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -50,8 +56,10 @@ class AlarmRecevier: BroadcastReceiver(){
         builder?.setAutoCancel(true)
         builder?.setContentIntent(pendingIntent)
         builder?.setSubText("알람이 울렸어요....")
-        builder?.setSound(RingtoneManager.getDefaultUri(alarmsound))
-        //AlarmFragment.pl(RingtoneManager.TYPE_NOTIFICATION)
+        builder?.setSound(alarmsound)   // 이거 안되는데요..?
+        //누르면 소리 꺼지게하는것도요..
+
+
 
         val notification = builder?.build()
         manager.notify(1, notification)
@@ -59,4 +67,3 @@ class AlarmRecevier: BroadcastReceiver(){
 
     }
 }
-

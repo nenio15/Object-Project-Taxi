@@ -173,6 +173,7 @@ class AlarmFragment : Fragment() {
 
 
             val calendar = Calendar.getInstance()
+            calendar.set(alarm.year, alarm.month, alarm.day, alarm.hour, alarm.minute, 0)
             //calendar.time = datetime!!        //그냥 dateformat임. 생겨먹은건 상관없는듯?
 
             alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntent)
