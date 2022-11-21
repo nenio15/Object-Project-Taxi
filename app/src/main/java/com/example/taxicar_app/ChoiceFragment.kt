@@ -7,7 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.taxicar_app.databinding.FragmentChoiceBinding
+import com.example.taxicar_app.databinding.FragmentTimelineBinding
+import kotlinx.android.synthetic.main.activity_chat.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,32 +31,32 @@ class ChoiceFragment : Fragment() {
 
     fun divideLine(togo: Boolean?, btn: Int, mActivity: MenuActivity){
         //대충, index에 따라서, 0이면 taxi & school, 1이면 carp & dome
-        mActivity.binding.btnTest2.visibility = View.VISIBLE
 
         if(togo == true) {
-            /*
-            if( btn == 0) {
-                Log.d("GoSchool", "by taxi. go line")
-                mActivity.showRecTime(1, 1)
-                //mActivity 대충 여기는 main에서 list를 보여주게끔 해야함. frag는 그냥 지워?
-            }else {
-                Log.d("GoSchool", "by carp. go line")
-                mActivity.showRecTime(1, 0)
-            }
-             */
             Log.d("CHOICE", "line to school, $btn")
-            mActivity.showRecTime(1, btn)
+            mActivity.whereTogo.car = "Taxi"
+            findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
+            //아래 말고, top_toTop 을 아래 parent로 바꾸는거 업냐, 애니메이션
             return
         }
-        else if(togo == false){
+        else if(togo == false) {
             Log.d("CHOICE", "line to dormi, $btn")
-            mActivity.showRecTime(0, btn)
+            mActivity.whereTogo.car = "CarPool"
+            findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             return
         }
 
         when(btn){
-            0 -> toSchool = true
-            1 -> toSchool = false
+            0 -> {
+                Log.d("CHOICE", "toSchool...")
+                toSchool = true
+                mActivity.whereTogo.togo = "toSchool"
+            }
+            1 -> {
+                Log.d("CHOICE", "toDormi...")
+                toSchool = false
+                mActivity.whereTogo.togo = "toDormi"
+            }
         }
         binding?.goTaxiClick?.text = "Taxi"
         binding?.goCarpoolClick?.text = "CAR POOL"
@@ -80,20 +85,14 @@ class ChoiceFragment : Fragment() {
         binding?.goCarpoolClick?.setOnClickListener{
             divideLine(toSchool, 1, mActivity)
         }
-        mActivity.binding.btnTest2.setOnClickListener{
-            //목적지 설정으로 회귀
-            if(mActivity.binding.recTimelines.visibility == View.VISIBLE) { //임시설정..
-                mActivity.binding.frmMenu.visibility = View.VISIBLE
-                //mActivity.binding.listBack.visibility = View.INVISIBLE
-                mActivity.binding.recTimelines.visibility = View.GONE
-                Log.d("MAIN", "delete rectime")
-            }else {
-                binding?.goTaxiClick?.text = "Dormitory\n-> School"
-                binding?.goCarpoolClick?.text = "School\n-> Dormitory"
-                toSchool = null
-                mActivity.binding.btnTest2.visibility = View.GONE
-                Log.d("CHOICE", "back to dest")
-            }
+        mActivity.binding.btnTest2.setOnClickListener {
+
+            binding?.goTaxiClick?.text = "Dormitory\n-> School"
+            binding?.goCarpoolClick?.text = "School\n-> Dormitory"
+            toSchool = null
+            //mActivity.replaceFragment(ChoiceFragment.newInstance())
+            Log.d("CHOICE", "back to dest")
+
         }
 
         // Inflate the layout for this fragment

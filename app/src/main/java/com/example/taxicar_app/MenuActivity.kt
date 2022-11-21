@@ -6,36 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.taxicar_app.databinding.ActivityMainBinding
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.taxicar_app.databinding.ActivityMenuBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 class MenuActivity : AppCompatActivity() {
+    lateinit var auth: FirebaseAuth
     lateinit var binding: ActivityMenuBinding
     private lateinit var alarmManager: AlarmManager
+    lateinit var whereTogo: Timedata
 
-    val timelines = arrayOf(
-        Timeline("9:00", "홍길동 김철수 김영희"),
-        Timeline("10:00", ""),
-        Timeline("11:00", ""),
-        Timeline("12:00", ""),
-        Timeline("13:00", ""),
-        Timeline("14:00", "홍길동"),
-        Timeline("15:00", ""),
-        Timeline("16:00", ""),
-        Timeline("17:00", ""),
-        Timeline("18:00", ""),
-        Timeline("19:00", ""),
-        Timeline("20:00", ""),
-        Timeline("21:00", ""),
-        Timeline("22:00", ""),
-        Timeline("23:00", ""),
-        Timeline("24:00", ""),
-    )
 
     fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().run {
@@ -44,15 +32,13 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-    fun showRecTime(index1: Int, index2: Int){    // 파라미터는 목적지랑 탑승수단.
-        //다른거 view도 조정을..?
-        //Log.d("MAIN", "show rectime")
-        binding.frmMenu.visibility = View.GONE
-        binding.recTimelines.visibility = View.VISIBLE
-        //binding.listBack.visibility = View.VISIBLE
-
-        binding.recTimelines.layoutManager = LinearLayoutManager(this)
-        binding.recTimelines.adapter = TimelineAdapter(timelines)
+    fun goIntent(){
+        Log.d("MENU", "go SubActivity... please..")
+        val intent = Intent(this, ChatActivity::class.java)
+        // copy need to organzie again
+        intent.putExtra("name", auth.currentUser?.displayName)
+        intent.putExtra("uid", auth.currentUser?.uid)
+        startActivity(intent)
     }
 
     fun addAlarm(month: Int, day: Int, hour: Int, minute: Int){
@@ -79,31 +65,54 @@ class MenuActivity : AppCompatActivity() {
         alarmManager.cancel(pendingIntent)
     }
 
+    fun navRemote(){
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.frmMenu.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        //setupActionBarWithNavController(navController)
+        binding.navBottom.setupWithNavController(navController)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean{
+        Log.d("MENU", item.itemId.toString() + " this is spartaaaaaa")
+        if(item.itemId == R.id.action_setting){
+            Log.d("menu", "click setting...")
+            findNavController(binding.frmMenu.id).navigate(R.id.action_menuFragment_to_action_setting)
+            return true
+        }
+        if(item.itemId == R.id.alarmFragment){
+            Log.d("menu, bottom", "click alarm")
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
+        auth = Firebase.auth
+        whereTogo = Timedata("", "")
+
+
+        val mToolbar = findViewById<androidx.appcompat.widget.Toolbar>(binding.menuTool.id)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.button_back)
+        //mActionBar?.setTitle("메뉴창")
+        //mActionBar?.setDisplayHomeAsUpEnabled(true)
+        //mActionBar?.setHomeAsUpIndicator(R.drawable.button_back)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.frmMenu.id) as NavHostFragment
+        val navController = navHostFragment.navController
+        setSupportActionBar(mToolbar)
+        //setupActionBarWithNavController(navController) //labeling..
+        binding.navBottom.setupWithNavController(navController)
+        //binding.menuTool.setupWithNavController(navController)
+        //appBarConfiguration =
+
+        binding.btnSetting.setOnClickListener{
+            replaceFragment(SettingFragment.newInstance())
+        }
+
+
         setContentView(binding.root)
-        replaceFragment(MenuFragment.newInstance())
-
-        binding.btnAlarm.setOnClickListener{
-            replaceFragment(AlarmFragment.newInstance())
-        }
-        binding.btnHome.setOnClickListener{
-            replaceFragment(MenuFragment.newInstance())
-        }
-        binding.btnDest.setOnClickListener{
-            replaceFragment(ChoiceFragment.newInstance())
-        }
-
-        binding.btnTest2.setOnClickListener{
-            //list있을때 활성화입니다. 아마,
-            //근데 new아니지 않아요?
-            //replaceFragment(fragment_choice.newInstance())
-            Log.d("MAIN", "delete rectime")
-            binding.frmMenu.visibility = View.VISIBLE
-            //binding.listBack.visibility = View.INVISIBLE
-            binding.recTimelines.visibility = View.GONE
-        }
-
     }
 }

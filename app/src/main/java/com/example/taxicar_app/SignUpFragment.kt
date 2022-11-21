@@ -1,6 +1,7 @@
 package com.example.taxicar_app
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.taxicar_app.databinding.FragmentSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +30,7 @@ class SignUpFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         arguments?.let {
         }
     }
@@ -37,29 +41,38 @@ class SignUpFragment : Fragment() {
     ): View? {
 
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        val mActivity = activity as MainActivity
+        //     val mActivity = activity as MainActivity
 
-        binding?.signUp?.setOnClickListener{
+        binding?.signUpIn?.setOnClickListener{
             //Log.d("SIGNUP", "to sign in - new address")
             //mActivity.replaceFragment(SignInFragment.newInstance())
             val email = binding?.emailUp?.text.toString()
             val password = binding?.passwordUp?.text.toString()
 
-            auth?.createUserWithEmailAndPassword(email,password)
-                ?.addOnCompleteListener { task ->
-                    if(task.isSuccessful){
-                        // 정상적으로 이메일과 비번이 넘어감. 즉, 새로운 유저 계정 생성
-                        //mActivity.replaceFragment(ChoiceFragment.newInstance())
-                        Log.d("SIGNUP", "to sign in - new address")
-                        Toast.makeText(mActivity,"회원가입에 성공했습니다.",Toast.LENGTH_SHORT).show()
-                        mActivity.replaceFragment(SignInFragment.newInstance())
-                    }else {
-                        // 기존에 있는 계정이거나, 서버 연결이 실패됐거나
-                        Toast.makeText(mActivity,"이미 존재하는 계정이거나, 회원가입에 실패했습니다.",Toast.LENGTH_SHORT).show()
+            if(email.isNotEmpty() && password.isNotEmpty()) {
+                auth?.createUserWithEmailAndPassword(email, password)
+                    ?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // 정상적으로 이메일과 비번이 넘어감. 즉, 새로운 유저 계정 생성
+                            //mActivity.replaceFragment(ChoiceFragment.newInstance())
+                            val intent = Intent(activity, MenuActivity::class.java)
+                            startActivity(intent)
+                            Log.d("SIGNUP", "to sign in - new address")
+                            Toast.makeText(activity, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                        } else {
+                            // 기존에 있는 계정이거나, 서버 연결이 실패됐거나
+                            Toast.makeText(
+                                activity,
+                                "이미 존재하는 계정이거나, 회원가입에 실패했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                }
+            }
         }
         binding?.signInBut?.setOnClickListener{
+            val mActivity = activity as MainActivity
             Log.d("SIGNUP", "to sign in")
             mActivity.replaceFragment(SignInFragment.newInstance())
         }

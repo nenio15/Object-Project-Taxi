@@ -80,6 +80,8 @@ class SignInFragment : Fragment() {
                     }
                 }
 
+            // add reset
+
         }
 
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -91,10 +93,12 @@ class SignInFragment : Fragment() {
         binding?.googleIn?.setOnClickListener {
             val signInIntent = googleSignInClient?.signInIntent
             startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
+            // add reset
         }
         binding?.signUpBut?.setOnClickListener{
             Log.d("SIGNIN", "to sign up")
             mActivity.replaceFragment(SignUpFragment.newInstance())
+
         }
 
         return binding?.root

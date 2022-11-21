@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    android:label="메뉴"
+    app:startDestination="@id/menuFragment">
+
+    <fragment
+        android:id="@+id/alarmFragment"
+        android:name="com.example.taxicar_app.AlarmFragment"
+        android:label="알람"
+        tools:layout="@layout/fragment_alarm" />
+    <fragment
+        android:id="@+id/choiceFragment"
+        android:name="com.example.taxicar_app.ChoiceFragment"
+        android:label="목적지"
+        tools:layout="@layout/fragment_choice">
+        <action
+            android:id="@+id/action_choiceFragment_to_timelineFragment"
+            app:destination="@id/timelineFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.example.taxicar_app.MenuFragment"
+        android:label="메뉴"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_action_setting"
+            app:destination="@id/settingFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/subActivity"
+        android:name="com.example.taxicar_app.ChatActivity"
+        android:label="activity_sub"
+        tools:layout="@layout/activity_chat" />
+    <fragment
+        android:id="@+id/timelineFragment"
+        android:name="com.example.taxicar_app.timelineFragment"
+        android:label="시간대"
+        tools:layout="@layout/fragment_timeline">
+        <action
+            android:id="@+id/action_timelineFragment_to_subActivity"
+            app:destination="@id/subActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.taxicar_app.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+</navigation>
