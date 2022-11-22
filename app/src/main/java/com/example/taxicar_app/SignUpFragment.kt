@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.example.taxicar_app.databinding.FragmentSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
@@ -48,11 +49,19 @@ class SignUpFragment : Fragment() {
             //mActivity.replaceFragment(SignInFragment.newInstance())
             val email = binding?.emailUp?.text.toString()
             val password = binding?.passwordUp?.text.toString()
+            val username = binding?.nameUp?.text.toString()
 
-            if(email.isNotEmpty() && password.isNotEmpty()) {
+            if(email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty() ) {
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            // we need to nicknames..
+                            //auth?.currentUser?.updateProfile({ displayName: useState(null)}) // auth에 이름 필요..
+                            Firebase.firestore.collection("Nicknames")
+                                .document(auth?.currentUser?.uid!!)
+                                .set(hashMapOf("nickname" to username))
+                                .addOnSuccessListener { Log.d("SignUp", "$username is register's name") }
+                                .addOnFailureListener{ e -> Log.d("SignUp", "Error occcurs: $e") }
                             // 정상적으로 이메일과 비번이 넘어감. 즉, 새로운 유저 계정 생성
                             //mActivity.replaceFragment(ChoiceFragment.newInstance())
                             val intent = Intent(activity, MenuActivity::class.java)

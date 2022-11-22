@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.*
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 
@@ -120,6 +121,13 @@ class SignInFragment : Fragment() {
         auth?.signInWithCredential(credential)
             ?.addOnCompleteListener{ task ->
                 if(task.isSuccessful){
+
+                    Firebase.firestore.collection("Nicknames")
+                        .document(auth?.currentUser?.uid!!)
+                        .set(hashMapOf("nickname" to account?.displayName.toString()))
+                        .addOnSuccessListener { Log.d("SignUp", "${account?.displayName.toString()} is register's name") }
+                        .addOnFailureListener{ e -> Log.d("SignUp", "Error occcurs: $e") }
+
                     Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
                     val intent = Intent(activity, MenuActivity::class.java)
                     startActivity(intent)

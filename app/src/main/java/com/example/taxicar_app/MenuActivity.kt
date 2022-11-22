@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -15,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.taxicar_app.databinding.ActivityMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
@@ -23,6 +25,7 @@ class MenuActivity : AppCompatActivity() {
     lateinit var binding: ActivityMenuBinding
     private lateinit var alarmManager: AlarmManager
     lateinit var whereTogo: Timedata
+    private val db = Firebase.firestore
 
 
     fun replaceFragment(fragment: Fragment) {
@@ -32,12 +35,43 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-    fun goIntent(){
-        Log.d("MENU", "go SubActivity... please..")
+    fun goIntent(reserveTime: String){
+        //Log.d("MENU", "go SubActivity... please..")
         val intent = Intent(this, ChatActivity::class.java)
         // copy need to organzie again
-        intent.putExtra("name", auth.currentUser?.displayName)
+        val name = db.collection("Nicknames")
+            .document(auth.currentUser?.uid!!)
+            .get()
+        Log.d("MENU", name.toString())
+
+        intent.putExtra("name", auth.currentUser?.displayName)       //auth.currentUser?.displayName)
         intent.putExtra("uid", auth.currentUser?.uid)
+        intent.putExtra("reserveTime", reserveTime)
+        // need this to cloud reserve
+        val data = hashMapOf(
+            "uid" to auth.currentUser?.uid,
+            "username" to auth.currentUser?.displayName,    // register's name
+            "time" to reserveTime // reserve timeline 어차피 얼마없..?
+            // "day" to         // 이걸로 요일 구분... 이건 언제 또 쓰냐?
+        )
+
+        db.collection("Reserve")
+            .document(whereTogo.car)
+            .collection(whereTogo.togo)
+            .add(data)
+            .addOnSuccessListener {
+                Toast.makeText(binding.root.context, "${reserveTime} 시간대로 설정되었습니다.",
+                    Toast.LENGTH_SHORT)
+                    .show()
+                Log.d("Timeline", "Document added: $it")
+            }
+            .addOnFailureListener{ e ->
+                Toast.makeText(binding.root.context, "전송실패..", Toast.LENGTH_SHORT).show()
+                Log.d("Timeline", "Error occcurs: $e")
+            }
+        // 여기에다가.. 방 id도 따로 관리하는 것이 필요해..
+
+        // this to realtime chats
         startActivity(intent)
     }
 
@@ -72,6 +106,7 @@ class MenuActivity : AppCompatActivity() {
         binding.navBottom.setupWithNavController(navController)
     }
 
+    // useless, didn't use
     override fun onOptionsItemSelected(item: MenuItem): Boolean{
         Log.d("MENU", item.itemId.toString() + " this is spartaaaaaa")
         if(item.itemId == R.id.action_setting){
@@ -105,7 +140,7 @@ class MenuActivity : AppCompatActivity() {
         setSupportActionBar(mToolbar)
         //setupActionBarWithNavController(navController) //labeling..
         binding.navBottom.setupWithNavController(navController)
-        //binding.menuTool.setupWithNavController(navController)
+        binding.menuTool.setupWithNavController(navController)
         //appBarConfiguration =
 
         binding.btnSetting.setOnClickListener{

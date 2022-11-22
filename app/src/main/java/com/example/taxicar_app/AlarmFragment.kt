@@ -45,7 +45,6 @@ private var minute = c.get(Calendar.MINUTE)
  */
 
 class SetAlarm(var year: Int, var month: Int, var day: Int, var hour: Int, var minute: Int){
-
 }
 
 class AlarmFragment : Fragment() {
@@ -83,6 +82,7 @@ class AlarmFragment : Fragment() {
 
         val date = Date(System.currentTimeMillis()) //현재시각
         val dateFormat = SimpleDateFormat("yyyy.MM.dd.HH.mm", Locale.KOREA)
+        dateFormat.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
         val nowTime = dateFormat.format(date)
         val curTime = nowTime.split('.') //year, month, day, hour, minute
         //var alarm = SetAlarm(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE)

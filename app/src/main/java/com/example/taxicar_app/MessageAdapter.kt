@@ -6,9 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.list_receive.view.*
+import kotlinx.android.synthetic.main.list_send.view.*
+import kotlinx.android.synthetic.main.list_timeline.view.*
+import java.sql.Timestamp
 
-data class Message( val message: String?, var sendId: String? ){
-    constructor(): this("","")
+data class Message( val message: String?, var sendName: String?, val time: String?){
+    constructor(): this("","", "")
 }
 
 class MessageAdapter(private val activity: ChatActivity, private val messageList: ArrayList<Message>):
@@ -35,12 +39,17 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
         // 보내는 데이터
         if(holder.javaClass == SendViewHolder::class.java){
             val viewHolder = holder as SendViewHolder
-            viewHolder.sendMessage.text = currentMessage.message
+            viewHolder.sendMsg.text = currentMessage.message
+            viewHolder.txtTime.text = currentMessage.time
+
         }else{ // 받는 데이터
             val viewHolder = holder as ReceiveViewHolder
-            viewHolder.receiveMessage.text = currentMessage.message
+            viewHolder.receiveMsg.text = currentMessage.message
+            viewHolder.txtTime.text = currentMessage.time
+            viewHolder.txtNickname.text = currentMessage.sendName
         }
     }
+
 
     override fun getItemCount(): Int {
         return messageList.size
@@ -51,7 +60,7 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
         // 메시지값
         val currentMessage = messageList[position]
 
-        return if(FirebaseAuth.getInstance().currentUser?.uid.equals(currentMessage.sendId)){
+        return if(FirebaseAuth.getInstance().currentUser?.uid.equals(currentMessage.sendName)){
             send
         }else{
             receive
@@ -60,11 +69,16 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
 
     // 보낸 쪽
     class SendViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val sendMessage: TextView = itemView.findViewById(R.id.send_msg)
+        //val sendMessage: TextView = itemView.findViewById(R.id.send_msg)
+        val sendMsg = itemView.send_msg
+        val txtTime = itemView.txt_cur_time
     }
     // 받는 쪽
     class ReceiveViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val receiveMessage: TextView = itemView.findViewById(R.id.receive_msg)
+        //val receiveMessage: TextView = itemView.findViewById(R.id.receive_msg)
+        val receiveMsg = itemView.receive_msg
+        val txtTime = itemView.txt_that_time
+        val txtNickname = itemView.txt_nickname
     }
 
 }

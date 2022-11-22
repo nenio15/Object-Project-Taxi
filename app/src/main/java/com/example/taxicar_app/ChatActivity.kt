@@ -2,6 +2,7 @@ package com.example.taxicar_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.ActivityChatBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -9,6 +10,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -18,10 +22,10 @@ class ChatActivity : AppCompatActivity() {
     //아래 문장이 realtime base를 get하는것. 원리는 json의 key값을 받는 형식과 같다.
     private var mDatabaseR: DatabaseReference = mFirebaseD.getReference()
 
-    private lateinit var receiveName: String
-    private lateinit var receiveUid: String
+    private lateinit var curName: String
+    private lateinit var curUid: String
     lateinit var db: DatabaseReference
-    private lateinit var receiverRoom: String
+    private lateinit var curRoom: String
     private lateinit var senderRoom: String
 
     private lateinit var messageList: ArrayList<Message>
@@ -40,35 +44,43 @@ class ChatActivity : AppCompatActivity() {
         binding.recMessages.adapter = messageAdapter
 
         //넘어온 데이터 변수에 담기
-        receiveName = intent.getStringExtra("name").toString()
-        receiveUid = intent.getStringExtra("uid").toString()
+        curName = intent.getStringExtra("name").toString()
+        curUid = intent.getStringExtra("uid").toString()
+        val time = intent.getStringExtra("reserveTime").toString().split(":")
+        val reserveTime = time[0] + time[1]
 
-        // setting
-        val senderUid = auth.currentUser?.uid
         // maybe.. need to conver to merge in one room
-        senderRoom = receiveUid + senderUid
-        receiverRoom = senderUid + receiveUid
+        senderRoom = curUid
 
-        supportActionBar?.title = receiveName   // this is working?
+        //supportActionBar?.title = receiveName   // this is working?
 
+        // 지금 방 구분이 시간뿐임 ( 탑승, 목적지 추가..)
         binding.sendBtn.setOnClickListener{
             val message = binding.msgEdit.text.toString()
-            val messageObject = Message(message, senderUid)
+            val date = Date(System.currentTimeMillis()) //현재시각
+            val dateFormat = SimpleDateFormat("HH :mm", Locale.KOREA)
+            dateFormat.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
+            val nowTime = dateFormat.format(date).split(" ")
+            var baTime: String
+            if(nowTime[0].toInt() < 12) baTime = "오전 " + nowTime[0].toInt().toString() + nowTime[1]
+            else baTime = "오후 " + (nowTime[0].toInt() - 12).toString() + nowTime[1]
+            Log.d("CHAT", baTime)
+            val messageObject = Message(message, curUid, baTime)  // curName
 
-            db.child("chats").child(senderRoom).child("messages").push()
+            // 예약시간의 방으로 add
+            db.child("chats").child(reserveTime).child("messages").push()
                 .setValue(messageObject).addOnSuccessListener {
-                    //TODO this need to merge one rooms..
-                    db.child("chats").child(receiverRoom).child("messages").push()
-                        .setValue(messageObject)
+                    //delete receiverRoom.
+                    //Log.d("CHAT", "add Successful")
+                    //db.child("chats").child(receiverRoom).child("messages").push()
+                    //    .setValue(messageObject)
                 }
             binding.msgEdit.setText("")
         }
 
-        binding.btnTest3.setOnClickListener{
-            finish()
-        }
+        binding.btnTest3.setOnClickListener{ finish() }
 
-        db.child("chats").child(senderRoom).child("messages")
+        db.child("chats").child(reserveTime).child("messages")
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     messageList.clear()

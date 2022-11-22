@@ -66,14 +66,6 @@ class timelineFragment : Fragment() {
         val curTimelines = TimelineAdapter(timelines, mActivity, db)
         binding?.recTimelines?.adapter = curTimelines
 
-        /*
-        binding?.recTimelines?.setOnClickListener{
-            Log.d("rec", "just click")
-            val intent = Intent(mActivity, SubActivity::class.java)
-            startActivity(intent)
-        }
-         */
-
         // Inflate the layout for this fragment
         return binding?.root
     }
