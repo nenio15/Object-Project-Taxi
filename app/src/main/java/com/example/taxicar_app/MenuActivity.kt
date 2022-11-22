@@ -47,6 +47,8 @@ class MenuActivity : AppCompatActivity() {
         intent.putExtra("name", auth.currentUser?.displayName)       //auth.currentUser?.displayName)
         intent.putExtra("uid", auth.currentUser?.uid)
         intent.putExtra("reserveTime", reserveTime)
+        intent.putExtra("by", whereTogo.car)
+        intent.putExtra("togo", whereTogo.togo)
         // need this to cloud reserve
         val data = hashMapOf(
             "uid" to auth.currentUser?.uid,

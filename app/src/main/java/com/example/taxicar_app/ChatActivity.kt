@@ -47,7 +47,9 @@ class ChatActivity : AppCompatActivity() {
         curName = intent.getStringExtra("name").toString()
         curUid = intent.getStringExtra("uid").toString()
         val time = intent.getStringExtra("reserveTime").toString().split(":")
-        val reserveTime = time[0] + time[1]
+        val car = intent.getStringExtra("by").toString()
+        val togo = intent.getStringExtra("togo").toString()
+        val curChatroom = "${car}M${togo}M${time[0]}${time[1]}"
 
         // maybe.. need to conver to merge in one room
         senderRoom = curUid
@@ -68,7 +70,7 @@ class ChatActivity : AppCompatActivity() {
             val messageObject = Message(message, curUid, baTime)  // curName
 
             // 예약시간의 방으로 add
-            db.child("chats").child(reserveTime).child("messages").push()
+            db.child("chats").child(curChatroom).child("messages").push()
                 .setValue(messageObject).addOnSuccessListener {
                     //delete receiverRoom.
                     //Log.d("CHAT", "add Successful")
@@ -80,7 +82,7 @@ class ChatActivity : AppCompatActivity() {
 
         binding.btnTest3.setOnClickListener{ finish() }
 
-        db.child("chats").child(reserveTime).child("messages")
+        db.child("chats").child(curChatroom).child("messages")
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     messageList.clear()
