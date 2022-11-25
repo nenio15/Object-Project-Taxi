@@ -174,7 +174,7 @@
             android:background="@drawable/sign_up_but"
             android:elevation="4dp"
             android:gravity="center"
-            android:text="SIGN IN"
+            android:text="SIGN UP"
             android:textColor="#fff"
             android:textSize="20dp"
             android:textStyle="bold"

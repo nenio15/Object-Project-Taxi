@@ -60,7 +60,7 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
         // 메시지값
         val currentMessage = messageList[position]
 
-        return if(FirebaseAuth.getInstance().currentUser?.uid.equals(currentMessage.sendName)){
+        return if(FirebaseAuth.getInstance().currentUser?.displayName.equals(currentMessage.sendName)){ //user의 name이랑 equal비교가 필요함..
             send
         }else{
             receive

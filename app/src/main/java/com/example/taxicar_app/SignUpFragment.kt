@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.taxicar_app.databinding.FragmentSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -50,13 +51,14 @@ class SignUpFragment : Fragment() {
             val email = binding?.emailUp?.text.toString()
             val password = binding?.passwordUp?.text.toString()
             val username = binding?.nameUp?.text.toString()
+            val nameUpdate = UserProfileChangeRequest.Builder().setDisplayName(username).build()
 
             if(email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty() ) {
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             // we need to nicknames..
-                            //auth?.currentUser?.updateProfile({ displayName: useState(null)}) // auth에 이름 필요..
+                            auth?.currentUser?.updateProfile(nameUpdate) // auth에 이름 필요..
                             Firebase.firestore.collection("Nicknames")
                                 .document(auth?.currentUser?.uid!!)
                                 .set(hashMapOf("nickname" to username))
