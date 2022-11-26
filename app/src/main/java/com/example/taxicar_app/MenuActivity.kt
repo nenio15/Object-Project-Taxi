@@ -36,12 +36,15 @@ class MenuActivity : AppCompatActivity() {
     private var room = "roomM0"
     private var cnt: Long = 0
 
+    // 이거대신 내비 쓰는중
+    /*
     fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().run {
             replace(binding.frmMenu.id, fragment)
             commit()
         }
     }
+     */
 
     fun goIntent(reserveTime: String) {
         val intent = Intent(this, ChatActivity::class.java)
@@ -68,7 +71,7 @@ class MenuActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     for (document in documents)
                         room = document.get("roomid").toString()
-                    Log.d("MENU_I", "please start at the end...")
+                    Log.d("MENU_connect", "uid already exist.. just go to room")
                     intent.putExtra("roomid", room)
                     startActivity(intent)
                 } else {
@@ -116,71 +119,6 @@ class MenuActivity : AppCompatActivity() {
 
             }
 
-/*
-        val exist = checkUidInR(reserveDb, reserveTime)
-        if (!exist) { // uid 존재안함..
-            Log.d("MENU", "yes!!!! no uid, we need to add")
-            UpdateInfo(reserveDb, rdb, reserveTime, curChatroom)
-
-            val baseData = hashMapOf(
-                "uid" to auth.currentUser?.uid,
-                "roomid" to room,    // register's name // need? collapse
-                "time" to getTime() // reserve timeline 어차피 얼마없..?
-                // "day" to         // 이걸로 요일 구분... 이건 언제 또 쓰냐?
-            )
-            val info = listOf(whereTogo.togo, whereTogo.car, room)
-            // TODO 아마 서치가 안될거임...(메뉴창에서) 어쩌냐,,,
-            val infoData = hashMapOf(curChatroom to info)   //"nickname" to auth.currentUser?.displayName,
-
-            Log.d("MENU_addroom", room)
-
-            // 예약 시간대 추가
-            reserveDb.collection(reserveTime)
-                .add(baseData)  //.add(data)는 보류, 더미가 쌓임(근데.. 이미 있으면, room넘버링이 바뀌는데?
-                .addOnSuccessListener {
-                    Toast.makeText(
-                        binding.root.context, "${reserveTime} 시간대로 설정되었습니다.",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    Log.d("Timeline", "Document added: $it")
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(binding.root.context, "전송실패..", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.d("Timeline", "Error occcurs: $e")
-                }
-
-            // 닉네임 info에 방 정보 넣기
-            db.collection("Nicknames").document(auth.currentUser?.uid!!).set(infoData, SetOptions.merge()) // 없어지는지 확인
-            // 단톡방 user에 uid 추가하기(4명이 정원)
-            rdb.child("chats").child(curChatroom).child(room).child("users")
-                .push()
-                .setValue(hashMapOf("uid" to auth.currentUser?.uid!!))  //push를 시켜야 랜덤id에 넣을 수 있다리..
-
-        }
-
- */
-
-        //Log.d("MENU", "null? i dont know")
-        /*
-        // 예약 시간대 설정
-        db.collection("Reserve")
-            .document(whereTogo.car)
-            .collection(whereTogo.togo)
-            .add(data)
-            .addOnSuccessListener {
-                Toast.makeText(binding.root.context, "${reserveTime} 시간대로 설정되었습니다.",
-                    Toast.LENGTH_SHORT)
-                    .show()
-                Log.d("Timeline", "Document added: $it")
-            }
-            .addOnFailureListener{ e ->
-                Toast.makeText(binding.root.context, "전송실패..", Toast.LENGTH_SHORT).show()
-                Log.d("Timeline", "Error occcurs: $e")
-            }
-
-         */
     }
 
     fun addAlarm(month: Int, day: Int, hour: Int, minute: Int){
@@ -255,56 +193,6 @@ class MenuActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.KOREA)
         dateFormat.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
         return dateFormat.format(date)
-    }
-
-    private fun checkUidInR(db: DocumentReference, rTime: String): Boolean{
-        var exist = false
-        db.collection(rTime).whereEqualTo("uid", auth.currentUser?.uid!!)
-            .get()
-            .addOnSuccessListener { documents ->
-                for ( document in documents ){
-                    Log.d("MENU_success", "${document.id} => ${document.data}")
-                }
-                exist = true
-            }
-            .addOnFailureListener { exception ->
-                Log.w("MENU_failed", exception)
-            }
-
-        return exist
-    }
-
-    private fun UpdateInfo(db: DocumentReference, rdb: DatabaseReference, rTime: String, chatroom: String){
-        db.collection(rTime).document("Info").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot.get("curRoomid") == null || snapshot.get("count") == null) return@addOnSuccessListener
-                room = snapshot.get("curRoomid") as String
-                cnt = snapshot.get("count") as Long
-                Log.d("MENU_GET", "$room and $cnt")
-
-                //여기 room30넘으면 리셋도 필요함..
-                if (cnt >= 4) {
-                    cnt = 0
-                    room = "roomM" + (room.split('M')[1].toInt() + 1)
-                } else if (cnt.equals(0)) {
-                    rdb.child("chats").child(chatroom).child(room).child("createdTime")
-                        .setValue(hashMapOf("created" to getTime()))
-                }
-            }
-            .addOnFailureListener { // first room open
-                rdb.child("chats").child(chatroom).child(room).child("createdTime")
-                    .setValue(hashMapOf("created" to getTime()))
-
-                Log.d("MENU_ADD_INFO", "no info.. so creat one")
-            }
-
-        val roomData = hashMapOf(
-            "curRoomid" to room,    // roomM0
-            "count" to ++cnt        // 1
-        )
-        Log.d("MENU_MOVE", cnt.toString())
-        db.collection(rTime).document("Info").set(roomData)
-
     }
 
     private fun addNew(ndb: DocumentReference, rdb: DatabaseReference, rTime: String, chatroom: String){

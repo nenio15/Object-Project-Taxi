@@ -56,7 +56,8 @@ class TimelineAdapter(val times: Array<Timeline>, val mActivity: MenuActivity, v
 
     override fun getItemCount() = times.size
 
-    class Holder(private val binding: ListTimelineBinding, val mActivity: MenuActivity, val db: FirebaseFirestore) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(private val binding: ListTimelineBinding, val mActivity: MenuActivity, val db: FirebaseFirestore)
+        : RecyclerView.ViewHolder(binding.root) {
         fun bind(timeline: Timeline){
             //다른거 list설정.
             binding.txtTime.text = timeline.time
