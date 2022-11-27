@@ -9,7 +9,6 @@ apply plugin:"kotlin-android-extensions"
 android {
     namespace 'com.example.taxicar_app'
     compileSdk 32
-
     defaultConfig {
         applicationId "com.example.taxicar_app"
         minSdk 24

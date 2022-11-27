@@ -23,7 +23,6 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if(viewType == 1){ // 받는 화면
-            //TODO need to merge too.. and R...?
             val view: View = LayoutInflater.from(activity).inflate(R.layout.list_receive, parent, false)
             ReceiveViewHolder(view)
         }else{ // 보내는 화면
@@ -59,7 +58,6 @@ class MessageAdapter(private val activity: ChatActivity, private val messageList
 
         // 메시지값
         val currentMessage = messageList[position]
-
         return if(FirebaseAuth.getInstance().currentUser?.uid.equals(currentMessage.sendName)){
             send
         }else{

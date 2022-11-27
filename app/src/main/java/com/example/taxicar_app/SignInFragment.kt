@@ -17,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
@@ -36,6 +38,7 @@ class SignInFragment : Fragment() {
     var auth: FirebaseAuth? = null
     var googleSignInClient: GoogleSignInClient? = null
     var GOOGLE_LOGIN_CODE = 9001
+    private lateinit var mdatabase: DatabaseReference
     var binding: FragmentSignInBinding? = null
     // TODO: Rename and change types of parameters
     //private var param1: String? = null
@@ -44,6 +47,8 @@ class SignInFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
+        //db초기화
+        mdatabase = Firebase.database.reference
 
         arguments?.let {
             //param1 = it.getString(ARG_PARAM1)
@@ -92,8 +97,10 @@ class SignInFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(mActivity, gso)
 
         binding?.googleIn?.setOnClickListener {
+
             val signInIntent = googleSignInClient?.signInIntent
             startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
+
             // add reset
         }
         binding?.signUpBut?.setOnClickListener{
@@ -110,12 +117,17 @@ class SignInFragment : Fragment() {
         if(requestCode == GOOGLE_LOGIN_CODE){
             var result = Auth.GoogleSignInApi.getSignInResultFromIntent(data!!)
             if(result!!.isSuccess){
+                val googleName = auth?.currentUser?.displayName.toString().trim()
+                val googleId = auth?.currentUser?.email.toString().trim()
+                val googleUid = auth?.currentUser?.uid.toString().trim()
+
                 var account = result.signInAccount
-                firebaseAuthWithGoogle(account)
+                firebaseAuthWithGoogle(googleName, googleId, googleUid,account)
             }
         }
     }
-    fun firebaseAuthWithGoogle(account: GoogleSignInAccount?){
+
+    fun firebaseAuthWithGoogle(googleName: String,  googleId:String, googleUid:String,account: GoogleSignInAccount?){
         val mActivity = activity as MainActivity
         var credential = GoogleAuthProvider.getCredential(account?.idToken, null)
         auth?.signInWithCredential(credential)
@@ -128,15 +140,20 @@ class SignInFragment : Fragment() {
                         .addOnSuccessListener { Log.d("SignUp", "${account?.displayName.toString()} is register's name") }
                         .addOnFailureListener{ e -> Log.d("SignUp", "Error occcurs: $e") }
 
-                    Toast.makeText( mActivity,"로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
+                    Toast.makeText( mActivity,"구글 로그인에 성공했습니다",Toast.LENGTH_SHORT).show()
                     val intent = Intent(activity, MenuActivity::class.java)
                     startActivity(intent)
+                    addUserToDatabase(googleName, googleId, googleUid)
                 }
                 else{
                     Toast.makeText(mActivity,"구글 로그인에 실패했습니다.",Toast.LENGTH_SHORT).show()
                 }
             }
 
+    }
+
+    private fun addUserToDatabase(googleName: String, googleId: String, googleUid: String){
+        mdatabase.child("googleUser").child(googleUid).setValue(GoogleUser(googleName, googleId, googleUid))
     }
 
     companion object {

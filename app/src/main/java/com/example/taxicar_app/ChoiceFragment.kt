@@ -29,17 +29,16 @@ class ChoiceFragment : Fragment() {
     private var toSchool: Boolean? = null
     //private var byTaxi: Boolean? = null
 
-    fun divideLine(togo: Boolean?, btn: Int, mActivity: MenuActivity){
+    fun divideLine(toschool: Boolean?,  btn: Int, mActivity: MenuActivity){
         //대충, index에 따라서, 0이면 taxi & school, 1이면 carp & dome
-
-        if(togo == true) {
+        if(toschool == true) {
             Log.d("CHOICE", "line to school, $btn")
             mActivity.whereTogo.car = "Taxi"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             //아래 말고, top_toTop 을 아래 parent로 바꾸는거 업냐, 애니메이션
             return
         }
-        else if(togo == false) {
+        else if(toschool == false) {
             Log.d("CHOICE", "line to dormi, $btn")
             mActivity.whereTogo.car = "CarPool"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
@@ -47,17 +46,21 @@ class ChoiceFragment : Fragment() {
         }
 
         when(btn){
+            // taxi
             0 -> {
                 Log.d("CHOICE", "toSchool...")
                 toSchool = true
-                mActivity.whereTogo.togo = "toSchool"
+                mActivity.whereTogo.togo = "Go to School"
             }
+            // carPool
             1 -> {
                 Log.d("CHOICE", "toDormi...")
                 toSchool = false
-                mActivity.whereTogo.togo = "toDormi"
+                mActivity.whereTogo.togo = "Go to Dorm"
             }
+
         }
+
         binding?.goTaxiClick?.text = "Taxi"
         binding?.goCarpoolClick?.text = "CAR POOL"
         return

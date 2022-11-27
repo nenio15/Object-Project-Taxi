@@ -3,6 +3,12 @@ package com.example.taxicar_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.ActivityChatBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +16,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.fragment_sign_up.*
+import kotlinx.android.synthetic.main.list_chatroom.*
+import kotlinx.android.synthetic.main.notification_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,6 +31,11 @@ class ChatActivity : AppCompatActivity() {
     private var mFirebaseD: FirebaseDatabase = FirebaseDatabase.getInstance()
     //아래 문장이 realtime base를 get하는것. 원리는 json의 key값을 받는 형식과 같다.
     private var mDatabaseR: DatabaseReference = mFirebaseD.getReference()
+
+
+    lateinit var noticeList: kotlin.collections.ArrayList<Notice>
+    // 공지 데이터베이스 클래스 객체 생서
+//    val noticeDb = NoticeAdapter()
 
     private lateinit var curName: String
     private lateinit var curUid: String
@@ -43,6 +58,8 @@ class ChatActivity : AppCompatActivity() {
         binding.recMessages.layoutManager = LinearLayoutManager(this)
         binding.recMessages.adapter = messageAdapter
 
+
+
         //넘어온 데이터 변수에 담기
         curName = intent.getStringExtra("name").toString()
         curUid = intent.getStringExtra("uid").toString()
@@ -51,10 +68,14 @@ class ChatActivity : AppCompatActivity() {
         val togo = intent.getStringExtra("togo").toString()
         val curChatroom = "${car}M${togo}M${time[0]}${time[1]}"
 
+
+        binding.destination.text = "${car} ${togo}"
+        binding.resTime.text = "예약시간 ${time[0]}:${time[1]}"
+
         // maybe.. need to conver to merge in one room
         senderRoom = curUid
 
-        //supportActionBar?.title = receiveName   // this is working?
+        supportActionBar?.title = curName   // Is this working?
 
         // 지금 방 구분이 시간뿐임 ( 탑승, 목적지 추가..)
         binding.sendBtn.setOnClickListener{
@@ -91,7 +112,6 @@ class ChatActivity : AppCompatActivity() {
                         val message = postSnapshat.getValue(Message::class.java)
                         messageList.add(message!!)
                     }
-
                     messageAdapter.notifyDataSetChanged()
                 }
 
@@ -101,9 +121,77 @@ class ChatActivity : AppCompatActivity() {
 
             })
 
+        // 채팅방 메뉴 목록
+        binding.chatMenu.setOnClickListener {
+            drawer.openDrawer(GravityCompat.END)
+        }
+
+
+        // 공지 firebase로 ㄱㄱ
+        binding.navNotification.setOnClickListener {
+            drawer.closeDrawer(GravityCompat.END)
+            val dialog = CustomDialog(this)
+            dialog.showDialog()
+            dialog.setOnClickListener(object: CustomDialog.OnDialogClickListener{
+                override fun onClicked(notice: String) {
+                    val long_notice = notice
+                   // val long_notice = binding.noticeOnly.text.toString()
+
+                    // 데이터 setting
+                    val notification = Notice(long_notice)
+
+                    // 데이터베이스에 등록
+                    db.child("chats").child(curChatroom).child("notice").push().setValue(notification)
+                        .addOnSuccessListener {
+                    }
+                }
+
+            })
+
+        }
+        // 공지를 firebase에서 가져와야하는데
+
+//        adapter = NoticeAdapter(this, noticeList)
+        // recyclerView 초기화
+        db.child("chats").child(curChatroom).child("notice")
+            .addValueEventListener(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for(postSnapshat in snapshot.children){
+                        val notice = postSnapshat.getValue(Notice::class.java)
+                        binding.noticeOnly.text = notice?.notification
+                        // 삭제
+                    }
+                    // 데이터 적용
+                //    adapter.notifyDataSetChanged()
+                    // 공지 빙글 뱅글
+                    binding.noticeOnly.isSelected = true
+
+
+                }
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
+
+
+        binding.navNotificationDelete.setOnClickListener {
+            db.child("chats").child(curChatroom).child("notice").removeValue()
+            //binding.noticeOnly.text = null
+            binding.noticeOnly.text = ""
+            drawer.closeDrawer(GravityCompat.END)
+        }
+
+        // 값이 날아가지 않으려면 어떻게 해야 할까나..
+        binding.navChatOut.setOnClickListener {
+            drawer.closeDrawer(GravityCompat.END)
+            finish()
+        }
+
+
         //기본 양식은 아래와 같다. 자세한 것은 firebase주소를 직접 찾아가 볼것.
         //mDatabaseR.child("room").child("taxi").child("toSchool").child("room1")
 
+
         setContentView(binding.root)
-    }
+
+    } // onCreate
 }
