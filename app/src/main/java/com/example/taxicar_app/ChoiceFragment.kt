@@ -25,20 +25,21 @@ import kotlinx.android.synthetic.main.activity_chat.view.*
 class ChoiceFragment : Fragment() {
     var binding: FragmentChoiceBinding? = null
 
+
     // TODO: Rename and change types of parameters
     private var toSchool: Boolean? = null
     //private var byTaxi: Boolean? = null
 
-    fun divideLine(toschool: Boolean?,  btn: Int, mActivity: MenuActivity){
+    fun divideLine(togo: Boolean?,  btn: Int, mActivity: MenuActivity){
         //대충, index에 따라서, 0이면 taxi & school, 1이면 carp & dome
-        if(toschool == true) {
+        if(togo == true) {
             Log.d("CHOICE", "line to school, $btn")
             mActivity.whereTogo.car = "Taxi"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
             //아래 말고, top_toTop 을 아래 parent로 바꾸는거 업냐, 애니메이션
             return
         }
-        else if(toschool == false) {
+        else if(togo == false) {
             Log.d("CHOICE", "line to dormi, $btn")
             mActivity.whereTogo.car = "CarPool"
             findNavController().navigate(R.id.action_choiceFragment_to_timelineFragment)
@@ -81,6 +82,8 @@ class ChoiceFragment : Fragment() {
         binding = FragmentChoiceBinding.inflate(inflater, container, false)
         val mActivity = activity as MenuActivity
         //mActivity.binding.listBack.visibility = View.GONE
+
+
 
         binding?.goTaxiClick?.setOnClickListener{
             divideLine(toSchool, 0, mActivity)

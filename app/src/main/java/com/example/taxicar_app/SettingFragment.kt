@@ -55,6 +55,8 @@ class SettingFragment : Fragment() {
             //startActivity(intent)
         }
 
+
+
         return binding?.root
     }
 

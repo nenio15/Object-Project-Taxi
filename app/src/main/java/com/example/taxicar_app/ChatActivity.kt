@@ -75,18 +75,18 @@ class ChatActivity : AppCompatActivity() {
         // maybe.. need to conver to merge in one room
         senderRoom = curUid
 
-        supportActionBar?.title = curName   // Is this working?
+       // supportActionBar?.title = curName   // Is this working?
 
         // 지금 방 구분이 시간뿐임 ( 탑승, 목적지 추가..)
         binding.sendBtn.setOnClickListener{
             val message = binding.msgEdit.text.toString()
             val date = Date(System.currentTimeMillis()) //현재시각
             val dateFormat = SimpleDateFormat("HH :mm", Locale.KOREA)
-            dateFormat.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
+            dateFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
             val nowTime = dateFormat.format(date).split(" ")
             var baTime: String
-            if(nowTime[0].toInt() < 12) baTime = "오전 " + nowTime[0].toInt().toString() + nowTime[1]
-            else baTime = "오후 " + (nowTime[0].toInt() - 12).toString() + nowTime[1]
+            if(nowTime[0].toInt() < 12) baTime = "오전" + nowTime[0].toInt().toString() + nowTime[1]
+            else baTime = "오후" + (nowTime[0].toInt() - 12).toString() + nowTime[1]
             Log.d("CHAT", baTime)
             val messageObject = Message(message, curUid, baTime)  // curName
 
@@ -100,6 +100,7 @@ class ChatActivity : AppCompatActivity() {
                 }
             binding.msgEdit.setText("")
         }
+
 
         binding.btnTest3.setOnClickListener{ finish() }
 
@@ -126,7 +127,6 @@ class ChatActivity : AppCompatActivity() {
             drawer.openDrawer(GravityCompat.END)
         }
 
-
         // 공지 firebase로 ㄱㄱ
         binding.navNotification.setOnClickListener {
             drawer.closeDrawer(GravityCompat.END)
@@ -150,7 +150,6 @@ class ChatActivity : AppCompatActivity() {
 
         }
         // 공지를 firebase에서 가져와야하는데
-
 //        adapter = NoticeAdapter(this, noticeList)
         // recyclerView 초기화
         db.child("chats").child(curChatroom).child("notice")
@@ -161,8 +160,6 @@ class ChatActivity : AppCompatActivity() {
                         binding.noticeOnly.text = notice?.notification
                         // 삭제
                     }
-                    // 데이터 적용
-                //    adapter.notifyDataSetChanged()
                     // 공지 빙글 뱅글
                     binding.noticeOnly.isSelected = true
 
@@ -185,11 +182,6 @@ class ChatActivity : AppCompatActivity() {
             drawer.closeDrawer(GravityCompat.END)
             finish()
         }
-
-
-        //기본 양식은 아래와 같다. 자세한 것은 firebase주소를 직접 찾아가 볼것.
-        //mDatabaseR.child("room").child("taxi").child("toSchool").child("room1")
-
 
         setContentView(binding.root)
 
