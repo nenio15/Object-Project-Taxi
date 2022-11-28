@@ -18,21 +18,13 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-/*
-enum class Timeline {
-    500,
-    530,
-    600
-}
-
-*/
-
-class Timeline( val time: String, val waiting: String ){
+class Timeline( val time: String, val waiting: Int ){
     //override fun 설정값 time만 하나. time + waiting 하나.
 }
 class Timedata( var car: String, var togo: String)
 
-class TimelineAdapter(val times: Array<Timeline>, val mActivity: MenuActivity, val db: FirebaseFirestore)
+// db 필요함?
+class TimelineAdapter(private val times: ArrayList<Timeline>, private val mActivity: MenuActivity, private val db: FirebaseFirestore)
     : RecyclerView.Adapter<TimelineAdapter.Holder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -61,39 +53,15 @@ class TimelineAdapter(val times: Array<Timeline>, val mActivity: MenuActivity, v
         fun bind(timeline: Timeline){
             //다른거 list설정.
             binding.txtTime.text = timeline.time
-            binding.txtWaiting.text = timeline.waiting
+            binding.txtWaiting.text = timeline.waiting.toString()
 
             binding.root.setOnClickListener{
                 // 아마 이것만 있으면 됨..
                 mActivity.goIntent(timeline.time)
 
-
                 // 현재 시각 구하기... 이게 왜 여기있지?
                 val sf = SimpleDateFormat("yy/MM/dd HH:mm", Locale.KOREA)
                 sf.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
-
-                /*
-                val data = hashMapOf(
-                    "user" to "홍길동",    // register's name
-                    "time" to timeline.time // reserve timeline 어차피 얼마없..?
-                    // "day" to         // 이걸로 요일 구분... 이건 언제 또 쓰냐?
-                )
-                val timeReserve = db.collection("Reserve")
-                    .document(mActivity.whereTogo.car)
-                    .collection(mActivity.whereTogo.togo)
-                    .add(data)
-                    .addOnSuccessListener {
-                        Toast.makeText(binding.root.context, "${timeline.time} 시간대에 !대기자로 설정되었습니다.",
-                            Toast.LENGTH_SHORT)
-                            .show()
-                        Log.d("Timeline", "Document added: $it")
-                    }
-                    .addOnFailureListener{ e ->
-                        Toast.makeText(binding.root.context, "전송실패..", Toast.LENGTH_SHORT).show()
-                        Log.d("Timeline", "Error occcurs: $e")
-                    }
-
-                 */
             }
 
             /*
@@ -116,14 +84,8 @@ class TimelineAdapter(val times: Array<Timeline>, val mActivity: MenuActivity, v
 
 
              */
-            //val mActivity = activity as MainActivity
-
-
-            // 클릭 시 대기자 생성, 및 단톡방 들어가기
-
 
         }
-
 
     }
 

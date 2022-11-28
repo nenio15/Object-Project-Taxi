@@ -26,6 +26,7 @@ import com.google.firebase.ktx.Firebase
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MenuActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -51,14 +52,12 @@ class MenuActivity : AppCompatActivity() {
         val reserveDb = db.collection("Reserve")
             .document("${whereTogo.car}M${whereTogo.togo}")
 
-        //필수.. 보내기
+        //필수 보내기
         val time = reserveTime.split(":")
         val curChatroom = "${whereTogo.car}M${whereTogo.togo}M${time[0]}${time[1]}"
         intent.putExtra("chatroom", curChatroom)
         val rdb = FirebaseDatabase.getInstance().reference
 
-        // 원래는... 있으면 그냥 보내주는거야, intent로..
-        // 근데 머가 많이 꼬였어.. 조건문이 망했어
         // uid가 해당 시간대에 있으면 그냥 보내주는 거라고!!!
         //      조건 1.해당 유저의 uid가 존재함
         //      조건 2.방id의 count가 4가 넘음(count의 갱신 필요) (반대로 cnt가 0이면, 방 새로 팔것)
@@ -195,7 +194,11 @@ class MenuActivity : AppCompatActivity() {
         return dateFormat.format(date)
     }
 
+    // TODO 함수명, 변수명 정리(난잡함..)
     private fun addNew(ndb: DocumentReference, rdb: DatabaseReference, rTime: String, chatroom: String){
+        val uidDb = db.collection("Nicknames").document(auth.currentUser?.uid!!)
+
+        // 이것들 다 data class로 변환시킬것.
         val roomData = hashMapOf(
             "curRoomid" to room,    // roomM0
             "count" to ++cnt        // 1
@@ -209,9 +212,10 @@ class MenuActivity : AppCompatActivity() {
             "time" to getTime() // reserve timeline 어차피 얼마없..?
             // "day" to         // 이걸로 요일 구분... 이건 언제 또 쓰냐?
         )
-        val info = listOf(whereTogo.togo, whereTogo.car, room)
+        val info = listOf(whereTogo.togo, whereTogo.car, rTime, room)
         // TODO 아마 서치가 안될거임...(메뉴창에서) 어쩌냐,,,
         val infoData = hashMapOf(chatroom to info)   //"nickname" to auth.currentUser?.displayName,
+
 
         Log.d("MENU_addroom", room)
 
@@ -233,7 +237,21 @@ class MenuActivity : AppCompatActivity() {
             }
 
         // 닉네임 info에 방 정보 넣기 (이것만큼은 되는구나..)
-        db.collection("Nicknames").document(auth.currentUser?.uid!!).set(infoData, SetOptions.merge())
+        uidDb.set(infoData, SetOptions.merge())
+        uidDb.get().addOnSuccessListener { snapshot ->
+            if(snapshot.get("roomlist") != null) {
+                val roomlist = snapshot.get("roomlist") as ArrayList<String>
+                // array는 정의되면 확장 불가.. 일단 ()로 받으면 확장이 되는데 여기는 ()로 받는게 아니란 말이지..
+                val roomExtense = roomlist.plus(chatroom)
+                Log.d("ROOM_MENU_LIST", roomExtense.toString())
+                uidDb.set(hashMapOf("roomlist" to roomExtense), SetOptions.merge())
+            }else {
+                // 받는 순서 다르다고 진짜 이렇게 써야함?
+                Log.d("ROOM_MENU_LIST_NULL", chatroom)
+                uidDb.set(hashMapOf("roomlist" to listOf(chatroom)), SetOptions.merge())
+            }
+        }
+
         // 단톡방 user에 uid 추가하기(4명이 정원)
         rdb.child("chats").child(chatroom).child(room).child("users")
             .push()

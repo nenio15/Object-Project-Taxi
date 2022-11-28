@@ -12,37 +12,29 @@ import com.example.taxicar_app.databinding.FragmentTimelineBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [timelineFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class timelineFragment : Fragment() {
     private var binding: FragmentTimelineBinding? = null
     private val db = Firebase.firestore
+    private lateinit var timeList: ArrayList<Timeline>
 
+    // 이거 대신, 시간을 for문이라던가로 돌리고, 그에 맞춰서 9:00 9:30, ""을 추가할것(addonData로 해야할듯)
     val timelines = arrayOf(
-        Timeline("9:00", "홍길동"),
-        Timeline("10:00", ""),
-        Timeline("11:00", ""),
-        Timeline("12:00", ""),
-        Timeline("13:00", ""),
-        Timeline("14:00", "김철수"),
-        Timeline("15:00", ""),
-        Timeline("16:00", ""),
-        Timeline("17:00", ""),
-        Timeline("18:00", ""),
-        Timeline("19:00", ""),
-        Timeline("20:00", ""),
-        Timeline("21:00", ""),
-        Timeline("22:00", ""),
-        Timeline("23:00", ""),
-        Timeline("24:00", ""),
+        Timeline("9:00", 0),
+        Timeline("10:00", 0),
+        Timeline("11:00", 0),
+        Timeline("12:00", 0),
+        Timeline("13:00", 0),
+        Timeline("14:00", 0),
+        Timeline("15:00", 0),
+        Timeline("16:00", 0),
+        Timeline("17:00", 0),
+        Timeline("18:00", 0),
+        Timeline("19:00", 0),
+        Timeline("20:00", 0),
+        Timeline("21:00", 0),
+        Timeline("22:00", 0),
+        Timeline("23:00", 0),
+        Timeline("24:00", 0),
     )
 
 
@@ -61,10 +53,27 @@ class timelineFragment : Fragment() {
         //binding = FragmentSignUpBinding.inflate(inflater, container, false)
         val mActivity = activity as MenuActivity
         binding = FragmentTimelineBinding.inflate(inflater, container, false)
+        timeList = ArrayList()
 
+        val curTimelines = TimelineAdapter(timeList, mActivity, db)
         binding?.recTimelines?.layoutManager = LinearLayoutManager(mActivity)
-        val curTimelines = TimelineAdapter(timelines, mActivity, db)
         binding?.recTimelines?.adapter = curTimelines
+
+
+
+        /*
+        예.. 나열을 현재 시간이랑 비교해서,
+        1. 현재 시간 < timeline시간 형식으로 보여줍니다. ( 1.timeformat.ToInt 2.for문으로 단순 int )
+        2. 각 timeline의 최근 대기방의 사람수를 보여준다.(reseve-wheretogo.car+by-"timelines"-info-count)
+            - 다만, 그 시간대가 있는지 확인(!document.isEmpty)
+            - 없으면 카운트 0
+            - 카운트로 사람 수 표시(지금은 숫자로..?)
+
+         */
+        // getTime이 이렇게 되어도 괜찮은가..?
+        var time = 500  // 5시부터 넣어볼까요~
+
+
 
         // Inflate the layout for this fragment
         return binding?.root

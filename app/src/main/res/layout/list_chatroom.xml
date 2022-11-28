@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:background="#E6D5D5D5">
 
     <TextView
         android:id="@+id/txt_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="16dp"
         android:text="홍길동 : 저희 어디서 볼까요?"
@@ -42,10 +42,11 @@
         app:layout_constraintTop_toTopOf="@+id/txt_togo" />
 
     <ImageView
-        android:id="@+id/img_by"
+        android:id="@+id/img_carpool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="48dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/txt_reservetime"
         app:layout_constraintStart_toEndOf="@+id/txt_reservetime"
         app:layout_constraintTop_toTopOf="@+id/txt_reservetime"
@@ -72,4 +73,15 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_taxi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_reservetime"
+        app:layout_constraintStart_toEndOf="@+id/txt_reservetime"
+        app:layout_constraintTop_toTopOf="@+id/txt_reservetime"
+        app:srcCompat="@drawable/ic_baseline_local_taxi_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

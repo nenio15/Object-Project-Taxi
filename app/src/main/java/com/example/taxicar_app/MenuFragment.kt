@@ -47,7 +47,7 @@ class MenuFragment : Fragment() {
         binding = FragmentMenuBinding.inflate(inflater, container, false)
         auth = Firebase.auth
         db = FirebaseDatabase.getInstance().reference
-        val cloudDb = Firebase.firestore.collection(auth.currentUser?.uid!!)
+        val cloudDb = Firebase.firestore.collection("Nicknames").document(auth.currentUser?.uid!!)
         val mActivity = activity as MenuActivity
         chatroomList = ArrayList()
 
@@ -56,37 +56,47 @@ class MenuFragment : Fragment() {
         binding?.recChat?.adapter = chatlistAdapter
         //val mActivity = activity as MenuActivity
 
-        cloudDb.get().addOnSuccessListener { fields ->
-            var r: String = ""
-            for (field in fields){
+        // nicknames의 roominfo에 대해 받아서 접근시도
+        cloudDb.get().addOnSuccessListener { snapshot ->
+            if (snapshot == null) return@addOnSuccessListener
+            //var list: ArrayList<String>
+            if( snapshot.get("roomlist") != null) {
+                val list = snapshot.get("roomlist") as ArrayList<String>
+                chatroomList.clear()
+            for( room in list ) {
+                Log.d("MENU_CHATROOM_S", room)
+                val roomInfo = snapshot.get(room) as ArrayList<String>
+                val roomId = roomInfo[3]
 
-                if(field.get("roomlist") != null) r = field.get("roomlist") as String
+                // uid의 방들을 찾아가라!
+                db.child("chats").child(room).child(roomId)
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {  // 업데이트 입니다. 머 굳이 업데이트일 필요가 있겠냐면은, 최근 메세지를 보기위해서?
+
+                            // 단톡방 사람수, 그리고 메세지
+                            val cnt = snapshot.child("users").childrenCount
+                            var lastMessage: Message? = Message()
+                            for (message in snapshot.child("messages").children) {
+                                // 사실 마지막 메세지만 받고 싶어요..
+                                lastMessage = message.getValue(Message::class.java)
+                            }
+                            // TODO roominfo도 다시 정렬할것 + 3번째 원소가 추가됨
+                            chatroomList.add( ChatRoom( lastMessage, roomInfo[0], roomInfo[1], roomInfo[2], roomInfo[3], cnt))
+                            Log.d("MENU_ADDED", "i added chatroomlist ${lastMessage?.message}")
+                            chatlistAdapter.notifyDataSetChanged()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+
+                        }
+                    })
             }
-            Log.d("MENU_CHATROOM", r)
+            }
+
+            //val n = fields.get(r) as String
+
 
         }
-
-        db.child("chats").child("room").child("roomid")
-            .addValueEventListener(object: ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    chatroomList.clear()
-                    val cnt = snapshot.child("users").childrenCount
-                    var lastMessage: Message? = Message()
-                    for( message in snapshot.child("messages").children ){
-                        lastMessage = message.getValue(Message::class.java)
-                    }
-                    // TODO 아직 값을 안받았어요..
-                    chatroomList.add(ChatRoom(lastMessage, "togo", "time", "by", cnt ))
-                    chatlistAdapter.notifyDataSetChanged()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
-        // 대충, 방을 늘리거나, 현재 방의 메세지가 추가되는 경우
-
-
 
         return binding?.root//inflater.inflate(R.layout.fragment_sign_in, container, false)
     }
