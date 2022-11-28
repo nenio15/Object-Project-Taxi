@@ -9,15 +9,15 @@
         android:id="@+id/txt_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="-80dp"
         android:layout_marginBottom="16dp"
-        android:text="9:00"
         android:fontFamily="@font/akaya_f"
+        android:text="9:00"
         android:textAppearance="@style/some_id"
         android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -33,13 +33,13 @@
         android:id="@+id/txt_waiting"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="128dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/akaya_f"
-        android:text="홍길동"
+        android:text="3"
         android:textAppearance="@style/some_id"
         app:layout_constraintBottom_toBottomOf="@+id/txt_time"
-        app:layout_constraintStart_toEndOf="@+id/txt_time"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_time" />
 
     <View

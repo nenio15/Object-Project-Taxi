@@ -54,7 +54,6 @@ class MenuFragment : Fragment() {
         val chatlistAdapter = ChatlistAdapter(mActivity, chatroomList)
         binding?.recChat?.layoutManager = LinearLayoutManager(mActivity)
         binding?.recChat?.adapter = chatlistAdapter
-        //val mActivity = activity as MenuActivity
 
         // nicknames의 roominfo에 대해 받아서 접근시도
         cloudDb.get().addOnSuccessListener { snapshot ->
@@ -69,6 +68,7 @@ class MenuFragment : Fragment() {
                 val roomId = roomInfo[3]
 
                 // uid의 방들을 찾아가라!
+                // 순서 바뀔때 색깔 문제가 약간 있는듯.. (clear, add의 문제. add라서 후열로 인식됨..인가? 애초에 메세지만이 아니라 그거는..)
                 db.child("chats").child(room).child(roomId)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {  // 업데이트 입니다. 머 굳이 업데이트일 필요가 있겠냐면은, 최근 메세지를 보기위해서?
@@ -80,7 +80,6 @@ class MenuFragment : Fragment() {
                                 // 사실 마지막 메세지만 받고 싶어요..
                                 lastMessage = message.getValue(Message::class.java)
                             }
-                            // TODO roominfo도 다시 정렬할것 + 3번째 원소가 추가됨
                             chatroomList.add( ChatRoom( lastMessage, roomInfo[0], roomInfo[1], roomInfo[2], roomInfo[3], cnt))
                             Log.d("MENU_ADDED", "i added chatroomlist ${lastMessage?.message}")
                             chatlistAdapter.notifyDataSetChanged()

@@ -65,9 +65,7 @@ class ChatlistAdapter(private val mActivity: MenuActivity, private val chatroomL
 
         }
 
-    override fun getItemCount(): Int {
-        return chatroomList.size
-    }
+    override fun getItemCount() = chatroomList.size
 
     // need this?
     override fun getItemViewType(position: Int): Int {

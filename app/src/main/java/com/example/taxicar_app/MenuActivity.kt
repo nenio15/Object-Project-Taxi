@@ -236,13 +236,12 @@ class MenuActivity : AppCompatActivity() {
                 Log.d("Timeline", "Error occcurs: $e")
             }
 
-        // 닉네임 info에 방 정보 넣기 (이것만큼은 되는구나..)
         uidDb.set(infoData, SetOptions.merge())
         uidDb.get().addOnSuccessListener { snapshot ->
             if(snapshot.get("roomlist") != null) {
                 val roomlist = snapshot.get("roomlist") as ArrayList<String>
-                // array는 정의되면 확장 불가.. 일단 ()로 받으면 확장이 되는데 여기는 ()로 받는게 아니란 말이지..
-                val roomExtense = roomlist.plus(chatroom)
+                // 새로 추가되는 요소가 0번째로 가도록
+                val roomExtense = arrayListOf(chatroom).plus(roomlist) //roomlist.plus(chatroom)
                 Log.d("ROOM_MENU_LIST", roomExtense.toString())
                 uidDb.set(hashMapOf("roomlist" to roomExtense), SetOptions.merge())
             }else {
