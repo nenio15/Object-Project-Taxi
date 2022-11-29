@@ -14,6 +14,7 @@
         android:layout_marginBottom="32dp"
         android:text="수요일 15:00"
         android:textSize="32sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/txt_setdate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

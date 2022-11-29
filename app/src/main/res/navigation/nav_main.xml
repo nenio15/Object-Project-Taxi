@@ -46,6 +46,6 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.taxicar_app.SettingFragment"
-        android:label="fragment_setting"
+        android:label="설정"
         tools:layout="@layout/fragment_setting" />
 </navigation>
