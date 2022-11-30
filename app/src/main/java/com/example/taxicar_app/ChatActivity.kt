@@ -58,8 +58,8 @@ class ChatActivity : AppCompatActivity() {
          */
 
         val curRoominfo = curChatroom.split('M')
-        val time = if((curRoominfo[2].toInt() / 100) < 10) "${curRoominfo[2][0]}:${curRoominfo[2].substring(1,2)}"
-            else "${curRoominfo[2].substring(0, 1)}:${curRoominfo[2].substring(2)}"
+        val time = if((curRoominfo[2].toInt() / 100) < 10) "${curRoominfo[2][0]}:${curRoominfo[2].substring(1,3)}"
+            else "${curRoominfo[2].substring(0, 2)}:${curRoominfo[2].substring(2)}"
         binding.destination.text = "${curRoominfo[0]} ${curRoominfo[1]}"
         binding.resTime.text = "예약 $time"
 
