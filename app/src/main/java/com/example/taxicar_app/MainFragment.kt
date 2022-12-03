@@ -22,15 +22,10 @@ import com.example.taxicar_app.databinding.FragmentMainBinding
      */
     class MainFragment : Fragment() {
         var binding: FragmentMainBinding? = null
-        // TODO: Rename and change types of parameters
-        //private var param1: String? = null
-        //private var param2: String? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             arguments?.let {
-                //param1 = it.getString(ARG_PARAM1)
-                //param2 = it.getString(ARG_PARAM2)
             }
         }
 
@@ -39,22 +34,17 @@ import com.example.taxicar_app.databinding.FragmentMainBinding
             savedInstanceState: Bundle?
         ): View? {
             binding = FragmentMainBinding.inflate(inflater, container, false)
-            // Inflate the layout for this fragment
-
-            //private val mActivity = activity as MainActivity
 
             binding?.startBtn?.setOnClickListener {
                 Log.d("MAIN", "to sign in")
                 val mActivity = activity as MainActivity
-                //mActivity.replaceFragment(AlarmFragment.newInstance())    //for test
                 mActivity.replaceFragment(SignInFragment.newInstance())
 
             }
-            return binding?.root//inflater.inflate(R.layout.fragment_sign_in, container, false)
+            return binding?.root
         }
 
         companion object {
-            // TODO: Rename and change types and number of parameters
             @JvmStatic
             fun newInstance() =
                 MainFragment().apply {

@@ -6,11 +6,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import kotlinx.android.synthetic.main.notification_edit.*
 
-data class Notice(
-    var notification: String
-){
-    constructor():this("")
-}
+data class Notice(var notification: String) //constructor():this("")
 
 class CustomDialog(context: Context)
 {

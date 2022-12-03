@@ -18,8 +18,6 @@ class ChatlistAdapter(private val mActivity: MenuActivity, private val chatroomL
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        //val binding = ListChatroomBinding.inflate(LayoutInflater.from(parent.context))
-        //return ViewHolder()
         val view: View = LayoutInflater.from(mActivity).inflate(R.layout.list_chatroom, parent, false)
         return ViewHolder(view, mActivity)
 
@@ -49,12 +47,10 @@ class ChatlistAdapter(private val mActivity: MenuActivity, private val chatroomL
             fun getRoom(chatroom: ChatRoom, recent: Int){
                 var togo: String = "기숙사"
                 if( chatroom.togo.equals("toSchool")) togo = "학교"
-                // 문자 메세지가 너무 길면 잘라야 하지 않나요..?
+                // 문자 메세지가 너무 길면...?
                 itemView.txt_message.text = "${chatroom.message?.sendName} : ${chatroom.message?.message}"
                 itemView.txt_togo.text = togo
 
-                //var time: String = chatroom.time!!
-                //if( chatroom.time.length == 4) time = "${chatroom.time[:1]}"
                 itemView.txt_reservetime.text = chatroom.time
                 itemView.txt_users.text = chatroom.cnt.toString()
                 if(chatroom.by.equals("Taxi")) itemView.img_taxi.visibility = View.VISIBLE
@@ -67,9 +63,4 @@ class ChatlistAdapter(private val mActivity: MenuActivity, private val chatroomL
 
     override fun getItemCount() = chatroomList.size
 
-    // need this?
-    override fun getItemViewType(position: Int): Int {
-        return 1
-
-    }
 }

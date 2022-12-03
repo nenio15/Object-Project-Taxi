@@ -1,6 +1,5 @@
 package com.example.taxicar_app
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.FragmentTimelineBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,7 +41,6 @@ class timelineFragment : Fragment() {
         binding?.recTimelines?.layoutManager = LinearLayoutManager(mActivity)
         binding?.recTimelines?.adapter = curTimelines
 
-        // getTime이 이렇게 되어도 괜찮은가..?
         val whereTogo = mActivity.whereTogo
         var time = 500  // 5시부터 넣어볼까요~
         val timeDb = db.collection("Reserve").document("${whereTogo.car}M${whereTogo.togo}")
@@ -51,8 +48,8 @@ class timelineFragment : Fragment() {
         val date = Date(System.currentTimeMillis())
         val dateFormat = SimpleDateFormat("HHmm", Locale.KOREA)
         val curTime = dateFormat.format(date).toInt()
-        // 대충 gettime부터~ 24시..
-
+        
+        // 현재 시각부터 24시까지
         while( time <= 2400) {
             if (time % 100 == 60) time = time + 100 - 60    // 시간 단위 30분씩
             if (time <= curTime) {
@@ -85,17 +82,7 @@ class timelineFragment : Fragment() {
                 }
         }
 
-
-        // Inflate the layout for this fragment
         return binding?.root
     }
 
-    companion object {
-        fun newInstance() =
-            timelineFragment().apply {
-                arguments = Bundle().apply {
-
-                }
-            }
-    }
 }

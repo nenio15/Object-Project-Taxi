@@ -19,12 +19,7 @@ import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
-
     lateinit var binding: ActivityChatBinding
-    private var mFirebaseD: FirebaseDatabase = FirebaseDatabase.getInstance()
-    //아래 문장이 realtime base를 get하는것. 원리는 json의 key값을 받는 형식과 같다.
-    private var mDatabaseR: DatabaseReference = mFirebaseD.getReference()
-
     private lateinit var curName: String
     private lateinit var curUid: String
     lateinit var db: DatabaseReference
@@ -42,20 +37,11 @@ class ChatActivity : AppCompatActivity() {
         val messageAdapter = MessageAdapter(this, messageList)
         binding.recMessages.layoutManager = LinearLayoutManager(this)
         binding.recMessages.adapter = messageAdapter
+        curUid = auth.currentUser?.uid!!
 
         //넘어온 데이터 변수에 담기
-        //curName = intent.getStringExtra("name").toString()  // 메뉴에서 주는 것보다, 여기서 받는게 빠르다.(서버가 있어서 그런듯..)
-        //curUid = intent.getStringExtra("uid").toString()
-        curUid = auth.currentUser?.uid!!        //있는거라서 intent로 안 받음.
-
         val curChatroom = intent.getStringExtra("chatroom") as String
         val curRoomid = intent.getStringExtra("roomid") as String
-        /*
-        val time = intent.getStringExtra("reserveTime").toString().split(":")
-        val car = intent.getStringExtra("by").toString()
-        val togo = intent.getStringExtra("togo").toString()
-        val curChatroom = "${car}M${togo}M${time[0]}${time[1]}"
-         */
 
         val curRoominfo = curChatroom.split('M')
         val time = if((curRoominfo[2].toInt() / 100) < 10) "${curRoominfo[2][0]}:${curRoominfo[2].substring(1,3)}"
@@ -72,14 +58,12 @@ class ChatActivity : AppCompatActivity() {
                 Log.d("CHAT_NAME", curName)
             }
 
-        //supportActionBar?.title = receiveName   // this is working?
-
-        // 지금 방 구분이 시간뿐임 ( 탑승, 목적지 추가..)
+        // 메세지 보내기
         binding.sendBtn.setOnClickListener{
             val message = binding.msgEdit.text.toString()
             val messageObject = Message(message, auth.currentUser?.displayName, markCurTime())  // curName
 
-            // 예약시간의 방으로 메세지 add
+            // 예약시간의 방으로 메세지 push
             db.child("chats").child(curChatroom).child(curRoomid).child("messages")
                 .push().setValue(messageObject)//.addOnSuccessListener
 
@@ -112,7 +96,7 @@ class ChatActivity : AppCompatActivity() {
             drawer.openDrawer(GravityCompat.END)
         }
 
-        // 공지 firebase로 ㄱㄱ
+        // 공지 firebase로 push
         binding.navNotification.setOnClickListener {
             drawer.closeDrawer(GravityCompat.END)
             val dialog = CustomDialog(this)
@@ -120,7 +104,6 @@ class ChatActivity : AppCompatActivity() {
             dialog.setOnClickListener(object: CustomDialog.OnDialogClickListener{
                 override fun onClicked(notice: String) {
                     val long_notice = notice
-                    // val long_notice = binding.noticeOnly.text.toString()
 
                     // 데이터 setting
                     val notification = Notice(long_notice)
@@ -128,16 +111,14 @@ class ChatActivity : AppCompatActivity() {
                     // 데이터베이스에 등록
                     db.child("chats").child(curChatroom).child(curRoomid).child("notice")
                         .push().setValue(notification)
-                        .addOnSuccessListener {
-                        }
+
                 }
 
             })
 
         }
-        // 공지를 firebase에서 가져와야하는데
-//        adapter = NoticeAdapter(this, noticeList)
-        // recyclerView 초기화
+
+        // 공지 변화 업뎃
         db.child("chats").child(curChatroom).child(curRoomid).child("notice")
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -168,9 +149,6 @@ class ChatActivity : AppCompatActivity() {
             drawer.closeDrawer(GravityCompat.END)
             finish()
         }
-
-        //기본 양식은 아래와 같다. 자세한 것은 firebase주소를 직접 찾아가 볼것.
-        //mDatabaseR.child("room").child("taxi").child("toSchool").child("room1")
 
         setContentView(binding.root)
     }

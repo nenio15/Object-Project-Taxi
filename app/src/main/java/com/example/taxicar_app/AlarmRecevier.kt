@@ -32,7 +32,7 @@ class AlarmRecevier: BroadcastReceiver(){
         }
 
         val alarmsound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        val am = context?.getSystemService(Context.ALARM_SERVICE)
+        //val am = context?.getSystemService(Context.ALARM_SERVICE)
         manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             manager.createNotificationChannel(
@@ -45,19 +45,15 @@ class AlarmRecevier: BroadcastReceiver(){
         }
 
         val intent2 = Intent(context, MenuActivity::class.java)
-        // maybe error for multibly..?
         val pendingIntent = PendingIntent.getActivity(context, 101, intent2, PendingIntent.FLAG_IMMUTABLE)
 
         //알림창 제목
-        builder?.setContentTitle("알람")
+        builder?.setContentTitle("택시/카풀 앱")
         builder?.setSmallIcon(R.drawable.ic_baseline_access_alarm_24)
         builder?.setAutoCancel(true)
         builder?.setContentIntent(pendingIntent)
-        builder?.setSubText("알람이 울렸어요....")
-        builder?.setSound(alarmsound)   // 이거 됩니다
-        //누르면 소리 꺼지게하는것도요..
-
-
+        builder?.setSubText("알람이 울렸어요")
+        builder?.setSound(alarmsound)
 
         val notification = builder?.build()
         manager.notify(1, notification)

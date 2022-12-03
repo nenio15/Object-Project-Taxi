@@ -33,17 +33,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.min
 
-/*
-//get 날짜
-var c: Calendar = Calendar.getInstance()
-var year = c.get(Calendar.YEAR)
-var month = c.get(Calendar.MONTH)
-var day = c.get(Calendar.DAY_OF_MONTH)
-//timepicker
-private var hour = c.get(Calendar.HOUR_OF_DAY)
-private var minute = c.get(Calendar.MINUTE)
- */
-
 class SetAlarm(var year: Int, var month: Int, var day: Int, var hour: Int, var minute: Int){
 }
 
@@ -78,42 +67,32 @@ class AlarmFragment : Fragment() {
         notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         binding = FragmentAlarmBinding.inflate(inflater, container, false)
         mActivity = activity as MenuActivity
-        //초기화 값이 형편없는데요... 지금 시간으로 리셋 못 하려나?
 
         val date = Date(System.currentTimeMillis()) //현재시각
         val dateFormat = SimpleDateFormat("yyyy.MM.dd.HH.mm", Locale.KOREA)
         dateFormat.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
         val nowTime = dateFormat.format(date)
         val curTime = nowTime.split('.') //year, month, day, hour, minute
-        //var alarm = SetAlarm(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE)
 
-        //진짜 코드 더럽다..
-        var alarm = SetAlarm(curTime[0].toInt(), curTime[1].toInt(), curTime[2].toInt(), 0, 0) //curTime[3].toInt(), curTime[4].toInt())
-        Log.d("Alarm", "${nowTime}")
-        //현재 날짜. 얘는 날짜 선택용
-        ////////
+        var alarm = SetAlarm(curTime[0].toInt(), curTime[1].toInt() - 1, curTime[2].toInt(), 0, 0)
+        Log.d("Alarm", "${alarm.year} ${alarm.month} ${alarm.day}")
+
         val mCalender = GregorianCalendar()
         Log.d("G-Alarm", mCalender.time.toString())
 
         binding?.txtSetdate?.text = "${curTime[1]}월 ${curTime[2]}일"
-
-
-        //val sf = SimpleDateFormat("yy/MM/dd HH:mm", Locale.KOREA)
-        //sf.timeZone = TimeZone.getTimeZone("Asiz/Seoul")
-
-        //var dateDialog: DatePickerDialog = DatePickerDialog(mActivity, null, year, month, day)
 
         //요일 설정
         binding?.txtSetdate?.setOnClickListener {
             val cal = Calendar.getInstance()
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                    //Log.d("kkang", "${year}년 ${month + 1}월 ${dayOfMonth}일")
                     val setdate: String = "${month + 1}월 ${dayOfMonth}일"
                     binding?.txtSetdate?.text = setdate
                     alarm.year = year
                     alarm.month = month
                     alarm.day = dayOfMonth
+                    Log.d("ALARM_DAY", "${alarm.year} ${alarm.month} ${alarm.day} new changed")
                 }
 
             DatePickerDialog(
@@ -129,8 +108,6 @@ class AlarmFragment : Fragment() {
             val cal = Calendar.getInstance()
             val timeSetListener =
                 TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    //Log.d("Time", "${Calendar.MONTH}월 ${Calendar.DAY_OF_MONTH}일")
-                    //00시는 내비둘까.. 따로 처리할까, 애초에 헷갈린단 말이지.
                     var t_minute: String = minute.toString()
                     if(minute < 10) t_minute = "0$minute"
                     if( hourOfDay < 12 ) content = "오전 $hourOfDay:$t_minute"
@@ -151,47 +128,18 @@ class AlarmFragment : Fragment() {
             Toast.makeText(binding?.root?.context, "${alarm.month + 1}월 ${alarm.day}일 ${alarm.hour}:${alarm.minute} 시간으로 예약되었습니다.",
                 Toast.LENGTH_SHORT)
                 .show()
-            //이거 파라매터를... 모르겠네
-            mActivity?.addAlarm(alarm.month, alarm.day, alarm.hour, alarm.minute)
+
+            val calendar = mActivity?.addAlarm(alarm)
+
             //AlarmReceiver에 값 전달
             val receiverIntent = Intent(mActivity, AlarmRecevier::class.java)
             val pendingIntent = PendingIntent.getBroadcast(mActivity, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE)
 
-            /*
-            val from = "2022-11-21 16:40:00"
-
-            //val nowTime = dateFormat.format(date)
-            val dataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
-            var datetime: Date? = null
-            try{
-                datetime = dateFormat.parse(from)
-            } catch (e: ParseException){
-                e.printStackTrace()
-            }
-            //val datel = dateFormat.parse(datestr)
-             */
-
-
-            val calendar = Calendar.getInstance()
-            calendar.set(alarm.year, alarm.month, alarm.day, alarm.hour, alarm.minute, 0)
-            //calendar.time = datetime!!        //그냥 dateformat임. 생겨먹은건 상관없는듯?
-
-            alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntent)
-            //mActivity?.addAlarm(Calendar.MONTH, Calendar.DAY_OF_MONTH, c_cal.get(Calendar.HOUR_OF_DAY), c_cal.get(Calendar.MINUTE))
+            alarmManager.set(AlarmManager.RTC, calendar!!.timeInMillis, pendingIntent)
             playSound(RingtoneManager.TYPE_NOTIFICATION)
-            //mActivity?.delAlarm()
         }
 
         return binding?.root
         }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            AlarmFragment().apply {
-                arguments = Bundle().apply {
-
-                }
-            }
-    }
 }

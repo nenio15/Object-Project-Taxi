@@ -17,18 +17,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SignInFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignUpFragment : Fragment() {
     private var auth: FirebaseAuth? = null
     var binding: FragmentSignUpBinding? = null
-    // TODO: Rename and change types of parameters
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +32,9 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        //     val mActivity = activity as MainActivity
 
         binding?.signUpIn?.setOnClickListener{
-            //Log.d("SIGNUP", "to sign in - new address")
-            //mActivity.replaceFragment(SignInFragment.newInstance())
             val email = binding?.emailUp?.text.toString()
             val password = binding?.passwordUp?.text.toString()
             val username = binding?.nameUp?.text.toString()
@@ -57,15 +44,14 @@ class SignUpFragment : Fragment() {
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // we need to nicknames..
-                            auth?.currentUser?.updateProfile(nameUpdate) // auth에 이름 필요..
+                            auth?.currentUser?.updateProfile(nameUpdate)
                             Firebase.firestore.collection("Nicknames")
                                 .document(auth?.currentUser?.uid!!)
                                 .set(hashMapOf("nickname" to username))
                                 .addOnSuccessListener { Log.d("SignUp", "$username is register's name") }
                                 .addOnFailureListener{ e -> Log.d("SignUp", "Error occcurs: $e") }
+
                             // 정상적으로 이메일과 비번이 넘어감. 즉, 새로운 유저 계정 생성
-                            //mActivity.replaceFragment(ChoiceFragment.newInstance())
                             val intent = Intent(activity, MenuActivity::class.java)
                             startActivity(intent)
                             Log.d("SIGNUP", "to sign in - new address")
@@ -93,15 +79,6 @@ class SignUpFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fragment_sign_in.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =
             SignUpFragment().apply {
