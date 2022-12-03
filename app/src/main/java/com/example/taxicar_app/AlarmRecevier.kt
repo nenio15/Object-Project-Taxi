@@ -17,8 +17,6 @@ import java.util.*
 
 class AlarmRecevier: BroadcastReceiver(){
 
-    public class AlarmRecevier(){ }
-
     lateinit var manager: NotificationManager
     var builder: NotificationCompat.Builder? = null
 
@@ -56,7 +54,7 @@ class AlarmRecevier: BroadcastReceiver(){
         builder?.setAutoCancel(true)
         builder?.setContentIntent(pendingIntent)
         builder?.setSubText("알람이 울렸어요....")
-        builder?.setSound(alarmsound)   // 이거 안되는데요..?
+        builder?.setSound(alarmsound)   // 이거 됩니다
         //누르면 소리 꺼지게하는것도요..
 
 

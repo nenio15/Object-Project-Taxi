@@ -19,12 +19,9 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Timeline( val time: String, val waiting: Long ){
-    //override fun 설정값 time만 하나. time + waiting 하나.
-}
+class Timeline( val time: String, val waiting: Long )
 class Timedata( var car: String, var togo: String)
 
-// db 필요함?
 class TimelineAdapter(private val times: ArrayList<Timeline>, private val mActivity: MenuActivity)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

@@ -147,11 +147,14 @@ class MenuActivity : AppCompatActivity() {
     // useless, didn't use
     override fun onOptionsItemSelected(item: MenuItem): Boolean{
         Log.d("MENU", item.itemId.toString() + " this is spartaaaaaa")
+        /*
         if(item.itemId == R.id.action_setting){
             Log.d("menu", "click setting...")
             findNavController(binding.frmMenu.id).navigate(R.id.action_menuFragment_to_action_setting)
             return true
         }
+
+         */
         if(item.itemId == R.id.alarmFragment){
             Log.d("menu, bottom", "click alarm")
             return true
