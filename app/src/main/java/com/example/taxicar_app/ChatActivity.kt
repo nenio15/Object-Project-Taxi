@@ -9,6 +9,7 @@ import com.example.taxicar_app.databinding.ActivityChatBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ChatActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -23,8 +25,10 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var curName: String
     private lateinit var curUid: String
     lateinit var db: DatabaseReference
+    private val storeDb = Firebase.firestore
 
     private lateinit var messageList: ArrayList<Message>
+    private lateinit var memberList: ArrayList<Member>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +38,14 @@ class ChatActivity : AppCompatActivity() {
 
         // 초기화
         messageList = ArrayList()
+        memberList = ArrayList()
         val messageAdapter = MessageAdapter(this, messageList)
+        val memberAdapter = MemberAdapter(this, memberList)
         binding.recMessages.layoutManager = LinearLayoutManager(this)
         binding.recMessages.adapter = messageAdapter
+        binding.recMembers.layoutManager = LinearLayoutManager(this)
+        binding.recMembers.adapter = memberAdapter
+
         curUid = auth.currentUser?.uid!!
 
         //넘어온 데이터 변수에 담기
@@ -57,6 +66,36 @@ class ChatActivity : AppCompatActivity() {
                 curName = snapshot.get("nickname").toString()
                 Log.d("CHAT_NAME", curName)
             }
+        
+        // 단톡방 인원 확인
+        db.child("chats").child(curChatroom).child(curRoomid).child("users")
+            .addValueEventListener(object: ValueEventListener {
+                //memberList.clear()
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    binding.txtMemcnt.text = "이용자 (" + snapshot.childrenCount + ")"
+
+                    for(postSnapshat in snapshot.children) {
+                        val map = postSnapshat.getValue() as HashMap<String, String>    //val uid = postSnapshat.getValue()
+                        val uid = map.get("uid") as String
+                        //Log.d("CHAT_MEMBERS", uid)
+
+                        storeDb.collection("Nicknames").document(uid).get()
+                            .addOnSuccessListener { nicks ->
+                                //Log.d("CHAT_MEMBERS_NICK0", nicks.toString())
+                                if (nicks.get("nickname") != null)
+                                    memberList.add( Member( uid, nicks.get("nickname").toString()))
+                                    Log.d("CHAT_MEMBERS_NICK", nicks.get("nickname").toString())
+                                    memberAdapter.notifyDataSetChanged()
+                                }
+
+                        }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
         // 메세지 보내기
         binding.sendBtn.setOnClickListener{

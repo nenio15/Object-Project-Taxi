@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_chatroom.view.*
 
-//왜 data더라..
-data class ChatRoom( val message: Message?, val togo: String?, val by: String?, val time: String?, val roomid: String?, val cnt: Long){
-    constructor(): this(Message(), "", "", "", "roomM0",0)
-}
+//오류는 없는데.. 생긴다면, consturct의 문제
+data class ChatRoom( val message: Message?, val togo: String?, val by: String?, val time: String?, val roomid: String?, val cnt: Long)
+{constructor(): this(Message(), "", "", "", "", 0)}
 
 class ChatlistAdapter(private val mActivity: MenuActivity, private val chatroomList: ArrayList<ChatRoom>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
