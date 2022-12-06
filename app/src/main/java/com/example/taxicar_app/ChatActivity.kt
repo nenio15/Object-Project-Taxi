@@ -3,9 +3,15 @@ package com.example.taxicar_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taxicar_app.databinding.ActivityChatBinding
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -29,12 +35,36 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var messageList: ArrayList<Message>
     private lateinit var memberList: ArrayList<Member>
+    private lateinit var navView: NavigationView
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.sidebar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("CHAT_ITEM", "selected")
+        when(item.itemId){
+            R.id.btn_writing -> Toast.makeText(this, "clicked1", Toast.LENGTH_SHORT).show()
+            R.id.btn_delete -> Toast.makeText(this, "clicked2", Toast.LENGTH_SHORT).show()
+            R.id.btn_out -> Toast.makeText(this, "clicked3", Toast.LENGTH_SHORT).show()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         auth = Firebase.auth
         db = FirebaseDatabase.getInstance().reference
+
+        //OnNavigationItemSelectedListener()
+
+        //navView = findViewById(binding.navigation.id)
+        //navView.setNavigationItemSelectedListener(this)
+
 
         // 초기화
         messageList = ArrayList()
